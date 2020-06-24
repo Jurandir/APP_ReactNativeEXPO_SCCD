@@ -1,10 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 
-export default function App() {
+export default function Sobre({ navigation }) {
   return (
     <View style={styles.container}>
       <Text>Sobre</Text>
+      <Button 
+        title="Home" 
+        onPress={ () => navigation.navigate('Home')}
+      />      
     </View>
   );
 }
