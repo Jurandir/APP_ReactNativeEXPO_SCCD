@@ -9,6 +9,14 @@ export default function Home( { navigation }) {
         title="Sobre" 
         onPress={ () => navigation.navigate('Sobre')}
       />
+      <Button 
+        title="Mapa" 
+        onPress={ () => navigation.navigate('TelaMapa')}
+      />
+      <Button 
+        title="Login" 
+        onPress={ () => navigation.navigate('Login')}
+      />
     </View>
   );
 }
