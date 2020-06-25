@@ -9,7 +9,7 @@ import {  View,
           Animated, 
           Keyboard   } from 'react-native';
 
-export default function Login() {
+export default function Login( { navigation } ) {
 
   const [offset] = useState(new Animated.ValueXY({x: 0,y: 95}));
   const [opacity] = useState(new Animated.Value(0));
@@ -98,7 +98,11 @@ export default function Login() {
         />
 
         <TouchableOpacity style={styles.btnSubmit}>
-          <Text style={styles.submitText}>Acessar</Text>
+          <Text 
+            style={styles.submitText}  
+            onPress={ () => navigation.navigate('Home')}>
+            Acessar
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.btnRegister}>

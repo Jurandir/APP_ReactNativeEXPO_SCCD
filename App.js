@@ -14,22 +14,37 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Login">
 
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Sobre" component={Sobre} />
-        <Stack.Screen name="TelaMapa" component={TelaMapa} 
+      <Stack.Screen name="Home" component={Home} />
+
+      <Stack.Screen name="Login" component={Login} 
           options={{
+            headerShown: false,
             title: '',
             headerTransparent: true,
-            headerStyle: {
-              backgroundColor: 'transparent',
-            },
+            headerTintColor: '#000',
+          }}
+        />        
+
+        <Stack.Screen name="Sobre" component={Sobre} 
+          options={{
+            headerShown: true,
+            title: 'Detalhes',
+            headerTransparent: false,
+            headerTintColor: '#000',
+          }}        
+        />
+
+        <Stack.Screen name="TelaMapa" component={TelaMapa} 
+          options={{
+            headerShown: true,
+            title: '',
+            headerTransparent: true,
             headerTintColor: '#000',
           }}
         />
-        <Stack.Screen name="Login" component={Login} />
-      
+
       </Stack.Navigator>
     </NavigationContainer>
   );
