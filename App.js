@@ -7,6 +7,8 @@ import Home from './src/pages/Home';
 import Sobre from './src/pages/Sobre';
 import TelaMapa from './src/pages/TelaMapa';
 import Login from './src/pages/Login';
+import CartaFrete from './src/pages/CartaFrete';
+import DadosFrete from './src/pages/DadosFrete';
 
 
 const Stack = createStackNavigator();
@@ -37,6 +39,24 @@ export default function App() {
         />
 
         <Stack.Screen name="TelaMapa" component={TelaMapa} 
+          options={{
+            headerShown: true,
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#000',
+          }}
+        />
+
+        <Stack.Screen name="CartaFrete" component={CartaFrete} 
+          options={{
+            headerShown: true,
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#000',
+          }}
+        />
+
+        <Stack.Screen name="DadosFrete" component={DadosFrete} 
           options={{
             headerShown: true,
             title: '',

@@ -68,7 +68,7 @@ export default function Login( { navigation } ) {
           width: logo.x,
           height: logo.y,
         }} 
-         source={require('../../../assets/Logotipo_RunTracker.png')}
+         source={require('../../../assets/Logotipo_Termaco2.png')}
         />
       </View>
 
@@ -85,7 +85,7 @@ export default function Login( { navigation } ) {
 
         <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Usuário"
         autoCorrect={false}
         onChangeText={()=> {}}
         />
@@ -100,13 +100,9 @@ export default function Login( { navigation } ) {
         <TouchableOpacity style={styles.btnSubmit}>
           <Text 
             style={styles.submitText}  
-            onPress={ () => navigation.navigate('Home')}>
+            onPress={ () => navigation.navigate('CartaFrete')}>
             Acessar
           </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btnRegister}>
-          <Text style={styles.RegisterText}>Criar conta gratuita</Text>
         </TouchableOpacity>
 
       </Animated.View>

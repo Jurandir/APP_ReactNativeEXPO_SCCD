@@ -17,6 +17,14 @@ export default function Home( { navigation }) {
         title="Login" 
         onPress={ () => navigation.navigate('Login')}
       />
+      <Button 
+        title="Carta Frete" 
+        onPress={ () => navigation.navigate('CartaFrete')}
+      />
+      <Button 
+        title="Dados do Frete" 
+        onPress={ () => navigation.navigate('DadosFrete')}
+      />
     </View>
   );
 }
