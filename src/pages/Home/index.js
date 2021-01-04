@@ -1,9 +1,19 @@
 import React from 'react';
+import { AntDesign } from '@expo/vector-icons';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 export default function Home( { navigation }) {
   return (
     <View style={styles.container}>
+
+      <AntDesign name="caretright" size={24} color="black" />
+      <AntDesign name="caretleft" size={24} color="black" />
+      <AntDesign name="check" size={24} color="black" />
+      <AntDesign name="close" size={24} color="black" />
+      <AntDesign name="bars" size={24} color="black" />
+      <AntDesign name="picture" size={24} color="black" />
+      <AntDesign name="camerao" size={24} color="black" />
+
       <Text>Home</Text>
       <Button 
         title="Sobre" 
@@ -40,3 +50,16 @@ const styles = StyleSheet.create({
 
 
 // HOME
+
+// import { AntDesign } from '@expo/vector-icons';
+// <AntDesign name="caretright" size={24} color="black" />
+// <AntDesign name="caretleft" size={24} color="black" />
+// <AntDesign name="check" size={24} color="black" />
+// <AntDesign name="close" size={24} color="black" />
+// <AntDesign name="bars" size={24} color="black" />
+// <AntDesign name="picture" size={24} color="black" />
+// <AntDesign name="camerao" size={24} color="black" />
+
+
+
+

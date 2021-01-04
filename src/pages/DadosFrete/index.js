@@ -1,5 +1,9 @@
 import React, {useState, useEffect} from 'react';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+
 import {  View, 
+          ScrollView,
+          SafeAreaView,
           KeyboardAvoidingView, 
           Image, 
           TextInput, 
@@ -13,7 +17,9 @@ import {  View,
 export default function DadosFrete( { navigation } ) {
 
   return (
-    <KeyboardAvoidingView style={styles.background}>
+    <SafeAreaView style={styles.background}>
+
+        <Text style={styles.LabelTitulo}>Carta Frete</Text>
 
         <Text style={styles.LabelText}>Placas</Text>
         <TextInput
@@ -56,24 +62,27 @@ export default function DadosFrete( { navigation } ) {
         />
 
         <View style={styles.containerBTN}>
-          <TouchableOpacity style={styles.btnImagens}>
-            <Text 
-              style={styles.submitText}  
+          <TouchableOpacity 
+              style={styles.btnImagens}
               onPress={ () => {
                 console.log('Entrar-Frete')
-                navigation.navigate('Home')}}> Imagens  </Text>
+                navigation.navigate('Divice')}}
+              >
+
+              <Text style={styles.submitText}>Imagens</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnSair}>
-            <Text 
-              style={styles.submitText}  
+          <TouchableOpacity 
+              style={styles.btnSair}
               onPress={ () => {
-                console.log('Sair-Login')
-                navigation.navigate('CartaFrete')}}> Sair  </Text>
+                  console.log('Sair-Login')
+                  navigation.navigate('CartaFrete')}}
+              >
+            <Text style={styles.submitText}>Sair</Text>
           </TouchableOpacity>        
         </View>
 
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -93,24 +102,19 @@ const styles = StyleSheet.create({
     marginTop:20,
 
   },
-  containerLogo:{
-    flex:1,
-    justifyContent: 'center',
-    paddingTop: 10,
- 
-  },
   container:{
     flex:1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
-    paddingBottom: 20,
+    paddingBottom: 10,
     
   },
   input:{
     backgroundColor: '#FFF',
     width: '90%',
-    marginBottom:15,
+    marginTop:5,
+    marginBottom:10,
     color:'#222',
     fontSize: 17,
     borderRadius: 7,
@@ -140,14 +144,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
 
   },
+  scrollView: {
+    marginHorizontal: 5,
+  },
   LabelText:{
     color: '#FFF',
     textAlign: "left",
     alignSelf: 'stretch',
     marginLeft: 20,
-
+  },
+  LabelTitulo:{
+    color: '#FFF',
+    textAlign: "center",
+    marginTop: 10,
+    fontSize: 20
   }
-
 
 });
 

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -21,11 +20,27 @@ function ImagemPosteriorScreen() {
 }
 
 function FotografarScreen() {
+
+  //let navigation = nav
+  //function SetDivice() {
+  //    navigation.navigate('Divice')
+  //    return 'Foto'
+ // }
+
+  console.log('IMG:',img)
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Fotografar!</Text>
+    <View style={styles.container}>
+      <Text>{img}</Text>
+      <Image
+        style={styles.fotoDevice}
+        source={{ uri: img }}
+      />
+
+
     </View>
   );
+
 }
 
 function ExcluirImagemScreen() {
@@ -38,13 +53,11 @@ function ExcluirImagemScreen() {
 
 function ConfirmarScreen() {
   let navigation = nav
+  alert('Dados Confirmados !!!')
+  navigation.navigate('DadosFrete')
   return (
     <View style={styles.container}>
       <Text>Confirmar!</Text>
-      <Button 
-        title="Home" 
-        onPress={ () => navigation.navigate('Home')}
-      />      
     </View>
   );
 }
@@ -52,9 +65,15 @@ function ConfirmarScreen() {
 
 const Tab = createBottomTabNavigator();
 var nav;
+var img;
 
-export default function Sobre({ navigation }) {
+export default function Imagens({ route, navigation }) {
+  const { photo } = route.params
+  console.log('>> Photo:', photo.uri)
+  
   nav = navigation
+  img = photo.uri
+
   return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -77,7 +96,7 @@ export default function Sobre({ navigation }) {
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'tomato',
+          activeTintColor: '#35AAFF',
           inactiveTintColor: 'gray',
         }}
       >
@@ -105,6 +124,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderRadius: 7,
     padding: 10,
+
+  },
+  fotoDevice:{
+    width: '90%',
 
   },  
 });

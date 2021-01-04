@@ -15,6 +15,9 @@ export default function CartaFrete( { navigation } ) {
   return (
     <View style={styles.background}>
 
+       <Text style={styles.LabelTitulo}>Carta Frete</Text>
+
+
         <TextInput
         style={styles.input}
         placeholder="Carta Frete"
@@ -96,7 +99,14 @@ const styles = StyleSheet.create({
   RegisterText:{
     color: '#FFF',
 
+  },
+  LabelTitulo:{
+    color: '#FFF',
+    textAlign: "center",
+    marginBottom: 30,
+    fontSize: 20
   }
+
 
 
 });

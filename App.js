@@ -9,6 +9,8 @@ import TelaMapa from './src/pages/TelaMapa';
 import Login from './src/pages/Login';
 import CartaFrete from './src/pages/CartaFrete';
 import DadosFrete from './src/pages/DadosFrete';
+import Imagens from './src/pages/Imagens';
+import Divice  from './src/pages/Device';
 
 
 const Stack = createStackNavigator();
@@ -31,7 +33,7 @@ export default function App() {
 
         <Stack.Screen name="Sobre" component={Sobre} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Detalhes',
             headerTransparent: false,
             headerTintColor: '#000',
@@ -49,7 +51,7 @@ export default function App() {
 
         <Stack.Screen name="CartaFrete" component={CartaFrete} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: '',
             headerTransparent: true,
             headerTintColor: '#000',
@@ -58,12 +60,31 @@ export default function App() {
 
         <Stack.Screen name="DadosFrete" component={DadosFrete} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: '',
             headerTransparent: true,
             headerTintColor: '#000',
           }}
         />
+
+        <Stack.Screen name="Imagens" component={Imagens} 
+          options={{
+            headerShown: false,
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#000',
+          }}
+        />
+
+        <Stack.Screen name="Divice" component={Divice} 
+          options={{
+            headerShown: false,
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#000',
+          }}
+        />
+
 
       </Stack.Navigator>
     </NavigationContainer>
