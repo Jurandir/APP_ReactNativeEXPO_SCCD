@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef  } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -8,6 +8,9 @@ export default function Divice({navigation}) {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const camRef = useRef(null);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
+  const [modalOpen,setModalOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -27,19 +30,25 @@ export default function Divice({navigation}) {
   const onPress = async () => {
     if(cameraRef){
         let photo = await cameraRef.takePictureAsync('photo');
-
-
-
-
-        
-        console.log('photo', photo);
+       
+        console.log('( onPress ) photo', photo);
         navigation.navigate('Imagens',{'photo':photo});
       }
     // navigation.navigate('Imagens')
   }
 
+  async function takePicture(){
+    if(camRef){
+      const data = await camRef.current.takePictureAsync();
+      setCapturedPhoto(data.uri)
+      console.log(data);
+    }
+  }
+
+  // ref={ref => {setCameraRef(ref)}}
+
   return (
-      <Camera style={styles.camera} type={type} ref={ref => {setCameraRef(ref)}}>
+      <Camera style={styles.camera} type={type} ref={camRef}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
@@ -65,6 +74,22 @@ export default function Divice({navigation}) {
                <Text style={styles.text}>Foto</Text>
             
           </TouchableOpacity>
+
+          { capturedPhoto &&
+
+          <Modal
+          animationType="slide"
+          transparent={false}
+          visible={modalOpen}
+          >
+
+
+          </Modal>
+
+
+          }
+
+
         </View>
       </Camera>
   );

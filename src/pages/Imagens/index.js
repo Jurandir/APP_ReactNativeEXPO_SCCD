@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -30,13 +30,15 @@ function FotografarScreen() {
   console.log('IMG:',img)
 
   return (
-    <View style={styles.container}>
+    <View style={styles.fotoDevice}>
       <Text>{img}</Text>
-      <Image
-        style={styles.fotoDevice}
-        source={{ uri: img }}
-      />
 
+      <ImageBackground
+        source={{uri: img && img.uri}}
+        style={{
+          flex: 1
+        }}
+      />
 
     </View>
   );
@@ -127,7 +129,9 @@ const styles = StyleSheet.create({
 
   },
   fotoDevice:{
-    width: '90%',
+    flex: 1,
+    width: '100%',
+    height: '100%'    
 
   },  
 });
