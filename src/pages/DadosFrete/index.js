@@ -21,7 +21,20 @@ import {  Alert,
 export default function DadosFrete( { navigation } ) {
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [placas      , setPlacas]       = useState('AAA-0000');
+  const [motorista   , setMotorista]    = useState('JOSE FRANCISCO SILVA');
+  const [operacao    , setOperacao]     = useState('CARGA');
+  const [tipoVeiculo , setTipoveiculo]  = useState('NORMAL');
+  const [observacao  , setObservacao]   = useState('');    
+  const [cartaFrete  , setCartafrete]   = useState('');    
   
+
+  useEffect(() => {
+    setPlacas('WWW-8888')
+    setCartafrete('SPO-87654')
+  }, []);
+
+
   return (
     <SafeAreaView style={styles.background}>
 
@@ -30,46 +43,57 @@ export default function DadosFrete( { navigation } ) {
         >
           Carta Frete
         </Text>
+        <Text style={styles.LabelCartaFrete}>
+          {cartaFrete}
+        </Text>
 
         <Text style={styles.LabelText}>Placas</Text>
         <TextInput
+          value={placas}
           style={styles.input}
           editable = {false}
           placeholder="Placas"
           autoCorrect={false}
-          onChangeText={(text)=> { console.log(text)}}
+          onChangeText={(text)=> { setPlacas(text)}}
         />
 
         <Text style={styles.LabelText}>Motorista</Text>
         <TextInput
+          value={motorista}
           style={styles.input}
+          editable = {false}
           placeholder="Motorista"
           autoCorrect={false}
-          onChangeText={(text)=> { console.log(text)}}
-        />
-
-        <Text style={styles.LabelText}>Operação</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Operação"
-          autoCorrect={false}
-          onChangeText={(text)=> { console.log(text)}}
-        />
-
-        <Text style={styles.LabelText}>Tipo Veiculo</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Tipo Veiculo"
-          autoCorrect={false}
-          onChangeText={(text)=> { console.log(text)}}
+          onChangeText={(text)=> { setMotorista(text)}}
         />
 
         <Text style={styles.LabelText}>Observações</Text>
         <TextInput
+          value={observacao}
           style={styles.input}
           placeholder="Observações"
           autoCorrect={false}
-          onChangeText={(text)=> { console.log(text)}}
+          onChangeText={(text)=> { setObservacao(text)}}
+        />
+
+        <Text style={styles.LabelTituloBTN}>Operação:</Text>
+        <TextInput
+          value={operacao}
+          style={styles.input}
+          editable = {false}
+          placeholder="Operação"
+          autoCorrect={false}
+          onChangeText={(text)=> { setOperacao(text)}}
+        />
+
+        <Text style={styles.LabelTituloBTN}>Tipo Veiculo:</Text>
+        <TextInput
+          value={tipoVeiculo}
+          style={styles.input}
+          editable = {false}
+          placeholder="Tipo Veiculo"
+          autoCorrect={false}
+          onChangeText={(text)=> { setTipoveiculo(text)}}
         />
 
         <View style={styles.containerBTN}>
@@ -114,28 +138,51 @@ export default function DadosFrete( { navigation } ) {
         >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>Hello World!</Text>
+                <Text style={styles.modalText}>Operação:</Text>
 
                 <TouchableHighlight
                   style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
                   onPress={() => {
+                    setOperacao('CARGA')
                     setModalVisible(!modalVisible);
                   }}
                 >
-                  <Text style={styles.textStyle}>Hide Modal</Text>
+                  <Text style={styles.textStyle}>Carga</Text>
                 </TouchableHighlight>
+
+                <TouchableHighlight
+                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  onPress={() => {
+                    setOperacao('DESCARGA')
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  <Text style={styles.textStyle}>Descarga</Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  onPress={() => {
+                    setOperacao('VAZIO')
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  <Text style={styles.textStyle}>Vazio</Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  onPress={() => {
+                    setOperacao('AVARIA')
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  <Text style={styles.textStyle}>Avaria</Text>
+                </TouchableHighlight>
+
               </View>
             </View>
       </Modal>
-
-      <TouchableHighlight
-        style={styles.openButton}
-        onPress={() => {
-          setModalVisible(true);
-        }}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </TouchableHighlight>
 
     </SafeAreaView>
   );
@@ -170,7 +217,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop:5,
     marginBottom:10,
-    color:'#222',
+    color:'#000',
     fontSize: 17,
     borderRadius: 7,
     padding: 5,
@@ -208,12 +255,28 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     marginLeft: 20,
   },
+  LabelTituloBTN:{
+    color: '#FFF',
+    backgroundColor: "#35AAFF",
+    borderRadius: 5,    
+    textAlign: "left",
+    alignSelf: 'baseline',
+    padding: 2,
+    marginLeft: 20,
+  },
   LabelTitulo:{
     color: '#FFF',
     textAlign: "center",
-    marginTop: 10,
-    fontSize: 20
+    marginTop: 2,
+    fontSize: 14
   },
+  LabelCartaFrete:{
+    color: '#FFF',
+    textAlign: "center",
+    marginTop: 0,
+    marginBottom: 10,
+    fontSize: 30
+  },  
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -221,7 +284,8 @@ const styles = StyleSheet.create({
     marginTop: 22
   },
   modalView: {
-    margin: 20,
+    margin: 10,
+    width: 350,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
@@ -236,6 +300,8 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   openButton: {
+    margin: 5,
+    width: '90%',
     backgroundColor: "#F194FF",
     borderRadius: 20,
     padding: 10,
@@ -247,6 +313,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   modalText: {
+    fontSize: 20,
     marginBottom: 15,
     textAlign: "center"
   }  
