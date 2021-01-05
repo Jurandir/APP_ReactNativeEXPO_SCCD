@@ -21,25 +21,8 @@ function ImagemPosteriorScreen() {
 
 function FotografarScreen() {
 
-  //let navigation = nav
-  //function SetDivice() {
-  //    navigation.navigate('Divice')
-  //    return 'Foto'
- // }
-
-  console.log('IMG:',img)
-
   return (
     <View style={styles.fotoDevice}>
-      <Text>{img}</Text>
-
-      <ImageBackground
-        source={{uri: img && img.uri}}
-        style={{
-          flex: 1
-        }}
-      />
-
     </View>
   );
 
@@ -67,14 +50,9 @@ function ConfirmarScreen() {
 
 const Tab = createBottomTabNavigator();
 var nav;
-var img;
 
 export default function Imagens({ route, navigation }) {
-  const { photo } = route.params
-  console.log('>> Photo:', photo.uri)
-  
   nav = navigation
-  img = photo.uri
 
   return (
       <Tab.Navigator
@@ -82,7 +60,7 @@ export default function Imagens({ route, navigation }) {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
-            if (route.name === 'Fotografar') { iconName = focused ? 'camera' : 'camerao' } 
+            if (route.name === 'Imagens') { iconName = focused ? 'picture' : 'picture' } 
             else 
             if (route.name === 'Anterior')   { iconName = focused ? 'leftcircle' : 'leftcircleo' }
             else 
@@ -102,7 +80,7 @@ export default function Imagens({ route, navigation }) {
           inactiveTintColor: 'gray',
         }}
       >
-        <Tab.Screen name="Fotografar" component={FotografarScreen} />
+        <Tab.Screen name="Imagens" component={FotografarScreen} />
         <Tab.Screen name="Anterior"   component={ImagemAnteriorScreen} />
         <Tab.Screen name="Proximo"    component={ImagemPosteriorScreen} />
         <Tab.Screen name="Excluir"    component={ExcluirImagemScreen} />
@@ -137,4 +115,4 @@ const styles = StyleSheet.create({
 });
 
 
-// SOBRE
+// IMAGENS

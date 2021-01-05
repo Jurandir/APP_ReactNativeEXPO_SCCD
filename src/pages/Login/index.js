@@ -97,12 +97,14 @@ export default function Login( { navigation } ) {
         onChangeText={()=> {}}
         />
 
-        <TouchableOpacity style={styles.btnSubmit}>
-          <Text 
-            style={styles.submitText}  
-            onPress={ () => navigation.navigate('CartaFrete')}>
-            Acessar
+        <TouchableOpacity 
+          style={styles.btnSubmit}
+          onPress={ () => navigation.navigate('CartaFrete')}
+        >
+          <Text style={styles.submitText}>
+              Acessar
           </Text>
+          
         </TouchableOpacity>
 
       </Animated.View>

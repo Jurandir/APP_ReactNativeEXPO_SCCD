@@ -17,28 +17,31 @@ export default function CartaFrete( { navigation } ) {
 
        <Text style={styles.LabelTitulo}>Carta Frete</Text>
 
-
         <TextInput
-        style={styles.input}
-        placeholder="Carta Frete"
-        autoCorrect={false}
-        onChangeText={(text)=> { console.log(text)}}
+            style={styles.input}
+            placeholder="Carta Frete"
+            autoCorrect={false}
+            onChangeText={(text)=> { console.log(text)}}
         />
 
-        <TouchableOpacity style={styles.btnSubmit}>
-          <Text 
-            style={styles.submitText}  
-            onPress={ () => {
-              console.log('Entrar-Frete')
-              navigation.navigate('DadosFrete')}}> Entrar  </Text>
+        <TouchableOpacity 
+            style={styles.btnSubmit}
+            onPress={ () => { navigation.navigate('DadosFrete')} }
+        >
+          <Text style={styles.submitText}> 
+             Entrar  
+          </Text>
+
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.btnSubmit}>
-          <Text 
-            style={styles.submitText}  
-            onPress={ () => {
-              console.log('Sair-Login')
-              navigation.navigate('Login')}}> Sair  </Text>
+        <TouchableOpacity 
+            style={styles.btnSubmit}
+            onPress={ () => { navigation.navigate('Login')} }
+        >
+          <Text style={styles.submitText}> 
+              Sair
+          </Text>
+
         </TouchableOpacity>        
 
     </View>
@@ -106,8 +109,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     fontSize: 20
   }
-
-
 
 });
 

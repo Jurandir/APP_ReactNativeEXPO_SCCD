@@ -1,22 +1,33 @@
 import React, { useState, useEffect, useRef  } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Image, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 
+import * as Permissions from 'expo-permissions';
+import * as MediaLibrary from 'expo-media-library';
+ 
+
 export default function Divice({navigation}) {
   const [hasPermission, setHasPermission] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back);
   const camRef = useRef(null);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [modalOpen,setModalOpen] = useState(false);
 
   useEffect(() => {
+    
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
+
+    (async () => {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      setHasPermission(status === 'granted');
+    })();
+
+
   }, []);
 
   if (hasPermission === null) {
@@ -27,23 +38,27 @@ export default function Divice({navigation}) {
     return <Text>No access to camera</Text>;
   }
 
-  const onPress = async () => {
-    if(cameraRef){
-        let photo = await cameraRef.takePictureAsync('photo');
-       
-        console.log('( onPress ) photo', photo);
-        navigation.navigate('Imagens',{'photo':photo});
-      }
-    // navigation.navigate('Imagens')
-  }
-
   async function takePicture(){
     if(camRef){
       const data = await camRef.current.takePictureAsync();
       setCapturedPhoto(data.uri)
+      setModalOpen(true); 
       console.log(data);
     }
   }
+
+  async function savePicture(){
+    const asset = await MediaLibrary.createAssetAsync(capturedPhoto)
+    .then((a)=>{
+      console.log('Salvo:',a)
+      alert('Salvo com suvesso !!!')
+    })
+    .catch( err => {
+      console.log('Err:',err)
+    })
+
+  }
+
 
   // ref={ref => {setCameraRef(ref)}}
 
@@ -64,7 +79,7 @@ export default function Divice({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.button}
-            onPress={onPress}
+            onPress={takePicture}
             >
 
                 <FontAwesome
@@ -83,7 +98,28 @@ export default function Divice({navigation}) {
           visible={modalOpen}
           >
 
+            <View style={{flex:1, justifyContent: 'center', alignItems: 'center', margin:5}}>
 
+
+                  <View style={{margin: 5, flexDirection: 'row'}}>
+                        <TouchableOpacity style={{margin:5}} onPress={()=> setModalOpen(false)}>
+                          <FontAwesome name="window-close" size={40} color="#FF0000" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{margin:5}} onPress={savePicture}>
+                          <FontAwesome name="upload" size={40} color="#121212" />
+                        </TouchableOpacity>
+
+                  </View>
+
+
+                  <Image
+                    style={{width:'100%', height: 455, borderRadius: 20}}
+                    source={{ uri: capturedPhoto }}                  
+                  />
+
+
+            </View>
           </Modal>
 
 
