@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import { AntDesign } from '@expo/vector-icons';
 
 import {  Alert,
           View,
@@ -38,9 +39,7 @@ export default function DadosFrete( { navigation } ) {
   return (
     <SafeAreaView style={styles.background}>
 
-        <Text style={styles.LabelTitulo}
-              onPress={() => { setModalVisible(!modalVisible)}}        
-        >
+        <Text style={styles.LabelTitulo}>
           Carta Frete
         </Text>
         <Text style={styles.LabelCartaFrete}>
@@ -76,26 +75,38 @@ export default function DadosFrete( { navigation } ) {
           onChangeText={(text)=> { setObservacao(text)}}
         />
 
-        <Text style={styles.LabelTituloBTN}>Operação:</Text>
+        <Text style={styles.LabelText}>Operação:</Text>
+        <View style={{flexDirection: 'row'}}>
         <TextInput
           value={operacao}
-          style={styles.input}
+          style={styles.inputModal}
           editable = {false}
           placeholder="Operação"
           autoCorrect={false}
           onChangeText={(text)=> { setOperacao(text)}}
         />
+          <TouchableHighlight 
+              style={styles.openModal} 
+              onPress={() => { setModalVisible(!modalVisible)}}        
+          >
+              <AntDesign name="caretdown" size={20} color="#FFF" />
+          </TouchableHighlight>
+        </View>
 
-        <Text style={styles.LabelTituloBTN}>Tipo Veiculo:</Text>
-        <TextInput
-          value={tipoVeiculo}
-          style={styles.input}
-          editable = {false}
-          placeholder="Tipo Veiculo"
-          autoCorrect={false}
-          onChangeText={(text)=> { setTipoveiculo(text)}}
-        />
-
+        <Text style={styles.LabelText}>Tipo Veiculo:</Text>
+        <View style={{flexDirection: 'row'}}>
+          <TextInput
+            value={tipoVeiculo}
+            style={styles.inputModal}
+            editable = {false}
+            placeholder="Tipo Veiculo"
+            autoCorrect={false}
+            onChangeText={(text)=> { setTipoveiculo(text)}}
+          />
+          <TouchableHighlight style={styles.openModal}>
+              <AntDesign name="caretdown" size={20} color="#FFF" />
+          </TouchableHighlight>
+        </View>
         <View style={styles.containerBTN}>
           <TouchableOpacity 
               style={styles.btnImagens}
@@ -141,7 +152,7 @@ export default function DadosFrete( { navigation } ) {
                 <Text style={styles.modalText}>Operação:</Text>
 
                 <TouchableHighlight
-                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
                   onPress={() => {
                     setOperacao('CARGA')
                     setModalVisible(!modalVisible);
@@ -151,7 +162,7 @@ export default function DadosFrete( { navigation } ) {
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
                   onPress={() => {
                     setOperacao('DESCARGA')
                     setModalVisible(!modalVisible);
@@ -161,7 +172,7 @@ export default function DadosFrete( { navigation } ) {
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
                   onPress={() => {
                     setOperacao('VAZIO')
                     setModalVisible(!modalVisible);
@@ -171,7 +182,7 @@ export default function DadosFrete( { navigation } ) {
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
                   onPress={() => {
                     setOperacao('AVARIA')
                     setModalVisible(!modalVisible);
@@ -221,8 +232,27 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderRadius: 7,
     padding: 5,
-
   },
+  inputModal:{
+    backgroundColor: '#FFF',
+    width: '78%',
+    marginTop:5,
+    marginBottom:10,
+    color:'#000',
+    fontSize: 17,
+    borderRadius: 7,
+    padding: 5,
+  },
+  openModal: {
+    marginTop:5,
+    marginLeft:2,
+    width: '12%',
+    height: 40,    
+    backgroundColor: "#35AAFF",
+    borderRadius: 7,
+    padding: 10,
+    elevation: 2
+  },  
   btnImagens:{
     backgroundColor: '#35AAFF',
     width: '30%',
@@ -299,14 +329,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5
   },
-  openButton: {
-    margin: 5,
-    width: '90%',
-    backgroundColor: "#F194FF",
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2
-  },
   textStyle: {
     color: "white",
     fontWeight: "bold",
@@ -316,7 +338,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 15,
     textAlign: "center"
-  }  
+  },
+  buttonModal: {
+    width: '90%',
+    margin: 5,
+    backgroundColor: "#F194FF",
+    borderRadius: 5,
+    padding: 10,
+    elevation: 2
+  },    
 
 });
 
