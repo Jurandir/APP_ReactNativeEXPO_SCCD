@@ -52,6 +52,7 @@ export default function Divice({navigation}) {
     .then((a)=>{
       console.log('Salvo:',a)
       alert('Salvo com suvesso !!!')
+      navigation.goBack()
     })
     .catch( err => {
       console.log('Err:',err)

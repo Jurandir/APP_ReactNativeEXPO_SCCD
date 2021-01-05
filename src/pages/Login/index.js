@@ -7,13 +7,16 @@ import {  View,
           Text, 
           StyleSheet, 
           Animated, 
-          Keyboard   } from 'react-native';
+          Keyboard
+           } from 'react-native';
+
+// import AsyncStorage from '@react-native-async-storage/async-storage';           
 
 export default function Login( { navigation } ) {
 
-  const [offset] = useState(new Animated.ValueXY({x: 0,y: 95}));
+  const [offset]  = useState(new Animated.ValueXY({x: 0,y: 95}));
   const [opacity] = useState(new Animated.Value(0));
-  const [logo] = useState(new Animated.ValueXY({x: 180, y: 180}));
+  const [logo]    = useState(new Animated.ValueXY({x: 180, y: 180}));
 
   useEffect(()=> {
 
@@ -104,7 +107,7 @@ export default function Login( { navigation } ) {
           <Text style={styles.submitText}>
               Acessar
           </Text>
-          
+
         </TouchableOpacity>
 
       </Animated.View>

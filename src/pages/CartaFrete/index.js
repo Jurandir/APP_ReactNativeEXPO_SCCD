@@ -12,16 +12,21 @@ import {  View,
 
 export default function CartaFrete( { navigation } ) {
 
+  const [cartaFrete  , setCartafrete]   = useState('');    
+
   return (
     <View style={styles.background}>
 
        <Text style={styles.LabelTitulo}>Carta Frete</Text>
 
         <TextInput
+            value={cartaFrete}
+            autoCapitalize="characters"
+            autoFocus={true}
             style={styles.input}
             placeholder="Carta Frete"
             autoCorrect={false}
-            onChangeText={(text)=> { console.log(text)}}
+            onChangeText={(text)=> { setCartafrete(text)}}
         />
 
         <TouchableOpacity 
