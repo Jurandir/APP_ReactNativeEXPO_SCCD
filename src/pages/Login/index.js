@@ -9,8 +9,9 @@ import {  View,
           Animated, 
           Keyboard
            } from 'react-native';
+import { getData, setData } from '../../utils/dataStorage';
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';           
+//           
 
 export default function Login( { navigation } ) {
 
@@ -18,7 +19,15 @@ export default function Login( { navigation } ) {
   const [opacity] = useState(new Animated.Value(0));
   const [logo]    = useState(new Animated.ValueXY({x: 180, y: 180}));
 
+  const [userName    , setUsername]     = useState('');
+  const [userPassword, setUserpassword] = useState('');
+
   useEffect(()=> {
+
+    getData('@user').then((sto)=>{
+      console.log('USUÁRIO:',sto)
+      setUsername(sto.data.username)
+    })
 
     KeyboardDidShowListener = Keyboard.addListener('keyboardDidShow',keyboardDidShow);
     KeyboardDidHideListener = Keyboard.addListener('keyboardDidHide',keyboardDidHide);
@@ -63,6 +72,11 @@ export default function Login( { navigation } ) {
 
   }, []);
 
+  const userLogin = () => {
+    setData('@user',{username: userName })   
+    navigation.navigate('CartaFrete')
+  }
+
   return (
     <KeyboardAvoidingView style={styles.background}>
       <View style={styles.containerLogo}>
@@ -87,22 +101,26 @@ export default function Login( { navigation } ) {
       ]}>
 
         <TextInput
+        value={userName}
         style={styles.input}
         placeholder="Usuário"
         autoCorrect={false}
-        onChangeText={()=> {}}
+        onChangeText={(text)=> setUsername(text)}
         />
 
         <TextInput
+        value={userPassword}
+        secureTextEntry={true}
+        password={true}
         style={styles.input}
         placeholder="Senha"
         autoCorrect={false}
-        onChangeText={()=> {}}
+        onChangeText={(text)=> setUserpassword(text)}
         />
 
         <TouchableOpacity 
           style={styles.btnSubmit}
-          onPress={ () => navigation.navigate('CartaFrete')}
+          onPress={ userLogin }
         >
           <Text style={styles.submitText}>
               Acessar

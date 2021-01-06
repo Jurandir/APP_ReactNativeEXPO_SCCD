@@ -9,10 +9,31 @@ import {  View,
           StyleSheet, 
           Animated, 
           Keyboard   } from 'react-native';
+import { getData, setData } from '../../utils/dataStorage';
 
 export default function CartaFrete( { navigation } ) {
 
-  const [cartaFrete  , setCartafrete]   = useState('');    
+  const [cartaFrete  , setCartafrete]   = useState(''); 
+
+
+  useEffect(() => {
+    
+    (async () => {
+      let stoCartaFrete = await getData('@CartaFrete')
+      console.log('CARTAFRETE:',stoCartaFrete)
+      setCartafrete(stoCartaFrete.data.cartaFrete);
+    })();
+
+  }, []);
+  
+  const entrarDetalhes = () => {
+    setData('@CartaFrete',{ cartaFrete: cartaFrete })
+    navigation.navigate('DadosFrete')
+  }
+
+  const sairLogin = () => {
+    navigation.navigate('Login')
+  }
 
   return (
     <View style={styles.background}>
@@ -26,12 +47,12 @@ export default function CartaFrete( { navigation } ) {
             style={styles.input}
             placeholder="Carta Frete"
             autoCorrect={false}
-            onChangeText={(text)=> { setCartafrete(text)}}
+            onChangeText={(text)=> { setCartafrete(text) }}
         />
 
         <TouchableOpacity 
             style={styles.btnSubmit}
-            onPress={ () => { navigation.navigate('DadosFrete')} }
+            onPress={ entrarDetalhes }
         >
           <Text style={styles.submitText}> 
              Entrar  
@@ -41,7 +62,7 @@ export default function CartaFrete( { navigation } ) {
 
         <TouchableOpacity 
             style={styles.btnSubmit}
-            onPress={ () => { navigation.navigate('Login')} }
+            onPress={ sairLogin }
         >
           <Text style={styles.submitText}> 
               Sair

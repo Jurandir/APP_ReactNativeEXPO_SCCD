@@ -18,22 +18,68 @@ import {  Alert,
           Animated, 
           Keyboard
              } from 'react-native';
+import { getData, setData } from '../../utils/dataStorage';
 
 export default function DadosFrete( { navigation } ) {
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [placas      , setPlacas]       = useState('AAA-0000');
-  const [motorista   , setMotorista]    = useState('JOSE FRANCISCO SILVA');
-  const [operacao    , setOperacao]     = useState('CARGA');
-  const [tipoVeiculo , setTipoveiculo]  = useState('NORMAL');
-  const [observacao  , setObservacao]   = useState('');    
-  const [cartaFrete  , setCartafrete]   = useState('');    
+  const [placas      , setPlacas]       = useState(null);
+  const [motorista   , setMotorista]    = useState(null);
+  const [operacao    , setOperacao]     = useState(null);
+  const [tipoVeiculo , setTipoveiculo]  = useState(null);
+  const [observacao  , setObservacao]   = useState(null);    
+  const [cartaFrete  , setCartafrete]   = useState(null);    
   
 
-  useEffect(() => {
-    setPlacas('WWW-8888')
-    setCartafrete('SPO-87654')
+  useEffect( () => {
+
+    getData('@CartaFrete').then((sto) =>{
+          console.log('CARTAFRETE:',sto)
+          setCartafrete(sto.data.cartaFrete);
+      })
+    
+    getData('@DadosFrete').then((sto) => {
+          console.log('DADOSFRETE:',sto)
+          
+          if (sto.data) {
+            setPlacas(     sto.data.dadosFrete.placas      );
+            setMotorista(  sto.data.dadosFrete.motorista   );
+            setOperacao(   sto.data.dadosFrete.operacao    );
+            setTipoveiculo(sto.data.dadosFrete.tipoVeiculo );
+            setObservacao( sto.data.dadosFrete.observacao  );
+          } else {
+
+            console.log('DADOSFRETE2: inicial')
+
+            setPlacas('XXX9999');
+            setMotorista('NOME DO MOTORISTA');
+            setOperacao('CARGA');
+            setTipoveiculo('NORMAL');
+            setObservacao('');  
+          }
+        })
+    
   }, []);
+
+  const setDadosFrete = async () => {
+    let dadosFrete = {
+      placas: placas,
+      motorista: motorista,
+      operacao: operacao,
+      tipoveiculo: tipoVeiculo,
+      observacao: observacao,
+      cartafrete: cartaFrete
+    }
+    setData('@DadosFrete',{ dadosFrete: dadosFrete })
+  }
+
+  const fotografar = () => {
+    
+    setDadosFrete().then(()=>{
+      navigation.navigate('Divice')
+    })
+
+  }
 
 
   return (
@@ -110,7 +156,7 @@ export default function DadosFrete( { navigation } ) {
         <View style={styles.containerBTN}>
           <TouchableOpacity 
               style={styles.btnImagens}
-              onPress={ () => { navigation.navigate('Divice')}}
+              onPress={ fotografar }
           >
             <Text style={styles.submitText}>
                 Foto
