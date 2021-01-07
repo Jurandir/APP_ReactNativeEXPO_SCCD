@@ -16,6 +16,7 @@ import Divice  from './src/pages/Device';
 const Stack = createStackNavigator();
 
 export default function App() {
+  
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">

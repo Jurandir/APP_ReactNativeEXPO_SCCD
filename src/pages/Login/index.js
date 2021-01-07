@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {  View, 
           KeyboardAvoidingView, 
-          Image, 
           TextInput, 
           TouchableOpacity, 
           Text, 
           StyleSheet, 
           Animated, 
-          Keyboard
+          Keyboard,
+          Alert
            } from 'react-native';
+import CheckUser from '../../auth/CheckUser';
 import { getData, setData } from '../../utils/dataStorage';
-
-//           
 
 export default function Login( { navigation } ) {
 
@@ -25,7 +24,6 @@ export default function Login( { navigation } ) {
   useEffect(()=> {
 
     getData('@user').then((sto)=>{
-      console.log('USUÁRIO:',sto)
       setUsername(sto.data.username)
     })
 
@@ -72,36 +70,52 @@ export default function Login( { navigation } ) {
 
   }, []);
 
-  const userLogin = () => {
-    setData('@user',{username: userName })   
-    navigation.navigate('CartaFrete')
+  function userLogin() {
+    let loginOK = false
+    
+    setData('@user',{username: userName,  }) 
+
+    CheckUser(userName,userPassword).then((ret)=>{
+        if(ret.success) {
+            navigation.navigate('CartaFrete')    
+        } else {
+            Alert.alert('Acesso Negado:', ret.message, [{
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+              }],{ cancelable: false }
+            )           
+        }   
+    })
+
   }
 
   return (
     <KeyboardAvoidingView style={styles.background}>
-      <View style={styles.containerLogo}>
-        <Animated.Image
-        style={{
-          width: logo.x,
-          height: logo.y,
-        }} 
-         source={require('../../../assets/Logotipo_Termaco2.png')}
-        />
-      </View>
+        <View style={styles.containerLogo}>
+          <Animated.Image
+          style={{
+            width: logo.x,
+            height: logo.y,
+          }} 
+          source={require('../../../assets/Logotipo_Termaco2.png')}
+          />
+        </View>
 
-      <Animated.View 
-      style={[
-        styles.container,
-        {
-          opacity: opacity,
-          transform: [
-            {translateY: offset.y }
-          ]
-        }
-      ]}>
+        <Animated.View 
+        style={[
+          styles.container,
+          {
+            opacity: opacity,
+            transform: [
+              {translateY: offset.y }
+            ]
+          }
+        ]}>
 
         <TextInput
         value={userName}
+        autoCapitalize="none"
         style={styles.input}
         placeholder="Usuário"
         autoCorrect={false}
@@ -110,6 +124,7 @@ export default function Login( { navigation } ) {
 
         <TextInput
         value={userPassword}
+        autoCapitalize="none"
         secureTextEntry={true}
         password={true}
         style={styles.input}
@@ -180,15 +195,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
 
   },
-  btnRegister:{
-    marginTop: 10,
-
-  },
-  RegisterText:{
-    color: '#FFF',
-
-  }
-
 
 });
 
