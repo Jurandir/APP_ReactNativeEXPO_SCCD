@@ -71,11 +71,11 @@ export default function Login( { navigation } ) {
   }, []);
 
   function userLogin() {
-    let loginOK = false
     
     setData('@user',{username: userName,  }) 
 
     CheckUser(userName,userPassword).then((ret)=>{
+
         if(ret.success) {
             navigation.navigate('CartaFrete')    
         } else {
@@ -86,8 +86,9 @@ export default function Login( { navigation } ) {
               }],{ cancelable: false }
             )           
         }   
+    }).catch(err=>{
+      console.log('ERRO:',ret)
     })
-
   }
 
   return (
@@ -195,6 +196,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
 
   },
-
 });
 

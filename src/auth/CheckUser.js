@@ -14,10 +14,11 @@ export default async function CheckUser(user, pwd) {
         await CheckAD(cliente, user, password).then((credencial) => {
             let Err = credencial.Err || false;
             if (Err) {
-                ret = {success: false, err: true, message: 'Credenciais fornecidas não são válidas !!!' };
+                let msg = credencial.message
+                ret = {success: false, err: true, message: `Credenciais fornecidas não são válidas !!! \n (${msg}) ` };
             } else {
                 setData('@Credencial', credencial);
-                ret = { success: true, err: true, message: 'Success. OK.' };
+                ret = { success: true, err: false, message: 'Success. OK.' };
             }
 
         }).catch((err) => {

@@ -1,10 +1,14 @@
 import { post, get } from 'axios'
 
-async function LoadAPI(method, endpoint, server, params) {
+async function LoadAPI(method, endpoint, server, params, token ) {
+    let config
 
-    const config = {
-        headers: { "Content-Type": 'application/json' }
-    }
+    if(token) {
+        config = { headers: { Authorization: `Bearer ${token}`   } }    
+    } else {
+        config = { headers: { "Content-Type": 'application/json' } }
+    }        
+
     let url = server + endpoint
 
     try {
@@ -14,8 +18,7 @@ async function LoadAPI(method, endpoint, server, params) {
             ret = await get(url, { params }, config)
         }
         dados                = ret.data
-        dados.success        = ret.data.auth || false
-        dados.message        = dados.success===true ? 'Success. OK.' : 'Falha na autenticação!!!'
+
         dados.isErr          = false
         dados.isAxiosError   = false
         return dados

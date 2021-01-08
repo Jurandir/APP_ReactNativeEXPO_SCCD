@@ -5,60 +5,71 @@ import { AntDesign } from '@expo/vector-icons';
 import {  Alert,
           View,
           Modal, 
-          ScrollView,
           SafeAreaView,
-          KeyboardAvoidingView, 
-          Image, 
           TextInput, 
           TouchableOpacity,
           TouchableHighlight,
-          Button, 
           Text, 
-          StyleSheet, 
-          Animated, 
-          Keyboard
+          StyleSheet 
              } from 'react-native';
 import { getData, setData } from '../../utils/dataStorage';
 
-export default function DadosFrete( { navigation } ) {
+export default function DadosFrete( props ) {
+  const { navigation } = props 
+  let params = props.route.params 
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalTipo,    setModalTipo]    = useState(false);
   const [placas      , setPlacas]       = useState(null);
   const [motorista   , setMotorista]    = useState(null);
   const [operacao    , setOperacao]     = useState(null);
   const [tipoVeiculo , setTipoveiculo]  = useState(null);
   const [observacao  , setObservacao]   = useState(null);    
   const [cartaFrete  , setCartafrete]   = useState(null);    
-  
+
+  const [empresa  , setEmpresa]   = useState(null);    
+  const [codigo   , setCodigo]    = useState(null);    
+  const [emissao  , setEmissao]   = useState(null);    
+
 
   useEffect( () => {
 
-    getData('@CartaFrete').then((sto) =>{
-          console.log('CARTAFRETE:',sto)
-          setCartafrete(sto.data.cartaFrete);
+    if(params) {
+      setCartafrete(params.dadosCarta.cartaFrete);
+      setPlacas(params.dadosCarta.placas);
+      setMotorista(params.dadosCarta.motorista);
+      setEmpresa(params.dadosCarta.empresa);
+      setCodigo(params.dadosCarta.codigo);
+      setEmissao(params.dadosCarta.data);
+      setOperacao('CARGA')
+      setTipoveiculo('NORMAL')
+
+      console.log('===>PARAMETROS:',params)
+
+    } else {
+      getData('@CartaFrete').then((sto) =>{
+        setCartafrete(sto.data.cartaFrete);
+        setPlacas(sto.data.placas);
+        setMotorista(sto.data.motorista);
+        setEmpresa(sto.data.empresa);
+        setCodigo(sto.data.codigo);
+        setEmissao(sto.data.data);
+
+        console.log('===>STO @CartaFrete:',sto)
+
       })
-    
-    getData('@DadosFrete').then((sto) => {
-          console.log('DADOSFRETE:',sto)
-          
-          if (sto.data) {
-            setPlacas(     sto.data.dadosFrete.placas      );
-            setMotorista(  sto.data.dadosFrete.motorista   );
-            setOperacao(   sto.data.dadosFrete.operacao    );
-            setTipoveiculo(sto.data.dadosFrete.tipoVeiculo );
-            setObservacao( sto.data.dadosFrete.observacao  );
-          } else {
 
-            console.log('DADOSFRETE2: inicial')
+      getData('@DadosFrete').then((sto) => {        
+        if (sto.data) {
+          setOperacao(   sto.data.dadosFrete.operacao    );
+          setTipoveiculo(sto.data.dadosFrete.tipoVeiculo );
+          setObservacao( sto.data.dadosFrete.observacao  );
+        }
+        console.log('===>STO @DadosFrete:',sto)
+      })
 
-            setPlacas('XXX9999');
-            setMotorista('NOME DO MOTORISTA');
-            setOperacao('CARGA');
-            setTipoveiculo('NORMAL');
-            setObservacao('');  
-          }
-        })
-    
+    }
+      
   }, []);
 
   const setDadosFrete = async () => {
@@ -81,6 +92,35 @@ export default function DadosFrete( { navigation } ) {
 
   }
 
+  function ItemModalTipo(props) {   
+    function OnPressTipoVeiculo(value) {
+      setTipoveiculo(value);
+      setModalTipo(!modalTipo);
+    }
+    return (
+        <TouchableHighlight
+            style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
+            onPress={()=>{OnPressTipoVeiculo(props.VALOR)}}
+          >
+        <Text style={styles.textStyle}>{props.TITULO}</Text>
+      </TouchableHighlight>
+    )
+  }
+
+  function ItemModalOperacao(props) {
+    function OnPressOperacao(value) {
+      setOperacao(value);
+      setModalVisible(!modalVisible);
+    }   
+    return (
+        <TouchableHighlight
+            style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
+            onPress={()=>{OnPressOperacao(props.VALOR)}}
+          >
+        <Text style={styles.textStyle}>{props.TITULO}</Text>
+      </TouchableHighlight>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.background}>
@@ -112,15 +152,6 @@ export default function DadosFrete( { navigation } ) {
           onChangeText={(text)=> { setMotorista(text)}}
         />
 
-        <Text style={styles.LabelText}>Observações</Text>
-        <TextInput
-          value={observacao}
-          style={styles.input}
-          placeholder="Observações"
-          autoCorrect={false}
-          onChangeText={(text)=> { setObservacao(text)}}
-        />
-
         <Text style={styles.LabelText}>Operação:</Text>
         <View style={{flexDirection: 'row'}}>
         <TextInput
@@ -133,7 +164,7 @@ export default function DadosFrete( { navigation } ) {
         />
           <TouchableHighlight 
               style={styles.openModal} 
-              onPress={() => { setModalVisible(!modalVisible)}}        
+              onPress={() => { setModalVisible(!modalVisible)}}
           >
               <AntDesign name="caretdown" size={20} color="#FFF" />
           </TouchableHighlight>
@@ -149,10 +180,24 @@ export default function DadosFrete( { navigation } ) {
             autoCorrect={false}
             onChangeText={(text)=> { setTipoveiculo(text)}}
           />
-          <TouchableHighlight style={styles.openModal}>
+          <TouchableHighlight 
+               style={styles.openModal}
+               onPress={() => { setModalTipo(!modalTipo)}}
+          >
               <AntDesign name="caretdown" size={20} color="#FFF" />
           </TouchableHighlight>
         </View>
+
+
+        <Text style={styles.LabelText}>Observações</Text>
+        <TextInput
+          value={observacao}
+          style={styles.input}
+          placeholder="Observações"
+          autoCorrect={false}
+          onChangeText={(text)=> { setObservacao(text)}}
+        />
+
         <View style={styles.containerBTN}>
           <TouchableOpacity 
               style={styles.btnImagens}
@@ -187,6 +232,29 @@ export default function DadosFrete( { navigation } ) {
         </View>
 
 
+        
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalTipo}
+          onRequestClose={() => { Alert.alert("Modal has been closed."); }}
+        >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Tipo Veiculo:</Text>
+
+                <ItemModalTipo LISTA="1" TITULO="Normal"           VALOR="NORMAL"/>
+                <ItemModalTipo LISTA="1" TITULO="Complementar"     VALOR="COMPLEMANTAR"/>
+                <ItemModalTipo LISTA="1" TITULO="Coleta / Entrega" VALOR="COLETA/ENTREGA"/>
+
+              </View>
+            </View>
+        </Modal>
+
+
+
+
+
         <Modal
           animationType="slide"
           transparent={true}
@@ -197,49 +265,17 @@ export default function DadosFrete( { navigation } ) {
               <View style={styles.modalView}>
                 <Text style={styles.modalText}>Operação:</Text>
 
-                <TouchableHighlight
-                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
-                  onPress={() => {
-                    setOperacao('CARGA')
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles.textStyle}>Carga</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
-                  onPress={() => {
-                    setOperacao('DESCARGA')
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles.textStyle}>Descarga</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
-                  onPress={() => {
-                    setOperacao('VAZIO')
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles.textStyle}>Vazio</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={{ ...styles.buttonModal, backgroundColor: "#2196F3" }}
-                  onPress={() => {
-                    setOperacao('AVARIA')
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles.textStyle}>Avaria</Text>
-                </TouchableHighlight>
+                <ItemModalOperacao LISTA="2" TITULO="Carga"    VALOR="CARGA"/>
+                <ItemModalOperacao LISTA="2" TITULO="Descarga" VALOR="DESCARGA"/>
+                <ItemModalOperacao LISTA="2" TITULO="Vazio"    VALOR="VAZIO"/>
+                <ItemModalOperacao LISTA="2" TITULO="Avaria"   VALOR="AVARIA"/>
 
               </View>
             </View>
       </Modal>
+
+
+
 
     </SafeAreaView>
   );
