@@ -1,7 +1,44 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, SafeAreaView, FlatList,
+  Dimensions , Image, ImageBackground } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+
+const deviceWidth = Dimensions.get('window').width
+
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+];
+
+const renderItem = ({ item }) => (
+  <Item title={item.title} />
+);
+
+const Item = ({ title }) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{title}</Text>
+    <Image
+        style={styles.tinyLogo}
+        source= {{
+            isStatic: true,
+            uri: "file:///storage/emulated/0/DCIM/67a84fc7-cded-4c3d-bebb-6897ff589757.jpg"
+          }}
+      />
+  </View>
+);
+
 
 function ImagemAnteriorScreen() {
   return (
@@ -22,8 +59,14 @@ function ImagemPosteriorScreen() {
 function FotografarScreen() {
 
   return (
-    <View style={styles.fotoDevice}>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        horizontal={true}
+      />
+    </SafeAreaView>
   );
 
 }
@@ -95,6 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: StatusBar.currentHeight || 0,   
   },
   input:{
     backgroundColor: '#FFF',
@@ -104,14 +148,26 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderRadius: 7,
     padding: 10,
-
   },
   fotoDevice:{
     flex: 1,
-    width: '100%',
-    height: '100%'    
-
   },  
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    borderRadius: 7,
+    marginVertical: 8,
+    marginHorizontal: 8,
+    width: deviceWidth-15,
+  },
+  title: {
+    fontSize: 22,
+  },
+  tinyLogo:{
+    width: '100%',
+    height: 400,
+  }
+
 });
 
 

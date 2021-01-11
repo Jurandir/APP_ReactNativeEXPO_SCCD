@@ -13,7 +13,9 @@ export async function setData( chave, value ) {
 export async function getData( chave ) {
     try {
         const jsonValue = await AsyncStorage.getItem(chave)
+
         let ret = jsonValue != null ? JSON.parse(jsonValue) : null
+
         return  { success : true, data : ret  }
       } catch(e) {
         return { success : false, err: e }

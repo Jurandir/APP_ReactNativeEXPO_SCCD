@@ -87,7 +87,8 @@ export default function DadosFrete( props ) {
   const fotografar = () => {
     
     setDadosFrete().then(()=>{
-      navigation.navigate('Divice')
+      let dadosCarta = params.dadosCarta
+      navigation.navigate('Divice',{dadosCarta})
     })
 
   }
@@ -211,7 +212,7 @@ export default function DadosFrete( props ) {
 
           <TouchableOpacity 
               style={styles.btnImagens}
-              onPress={ () => { navigation.navigate('Imagens')}}
+              onPress={ () => { navigation.navigate('Picture')}}
           >
             <Text style={styles.submitText}>
                 Imagens

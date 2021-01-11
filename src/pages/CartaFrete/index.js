@@ -7,7 +7,7 @@ import {  View,
           Alert
                    } from 'react-native';
 import GetCartaFrete from '../../interface/GetCartaFrete';
-import { getData, setData } from '../../utils/dataStorage';
+import { delData, getData, setData } from '../../utils/dataStorage';
 
 export default function CartaFrete( { navigation } ) {
 
@@ -22,6 +22,12 @@ export default function CartaFrete( { navigation } ) {
     })();
 
   }, []);
+
+  const zeraDados = () => {
+    delData('@ListaFotos').then((a)=>{
+      alert('Dados zerados !!!')
+    })
+  }
   
   const entrarDetalhes = () => {
     let w = cartaFrete.replace('-','')
@@ -102,6 +108,16 @@ export default function CartaFrete( { navigation } ) {
               Sair
           </Text>
         </TouchableOpacity>        
+
+        <TouchableOpacity 
+            style={styles.btnSubmit}
+            onPress={ zeraDados }
+        >
+          <Text style={styles.submitText}> 
+              Zera Dados
+          </Text>
+        </TouchableOpacity>        
+
 
     </View>
   );

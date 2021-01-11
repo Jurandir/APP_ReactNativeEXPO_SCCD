@@ -6,9 +6,14 @@ import { Camera } from 'expo-camera';
 
 import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from 'expo-media-library';
+
+import { getData, setData } from '../../utils/dataStorage';
  
 
-export default function Divice({navigation}) {
+export default function Divice( props ) {
+  const { navigation } = props 
+  let params = props.route.params 
+
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const camRef = useRef(null);
@@ -26,7 +31,6 @@ export default function Divice({navigation}) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       setHasPermission(status === 'granted');
     })();
-
 
   }, []);
 
@@ -48,11 +52,44 @@ export default function Divice({navigation}) {
   }
 
   async function savePicture(){
+    
+    let listaFotos = []
+    let foto       = {id:0, dados:{}, imagem:{}}
+
+    const stoListaFotos = await getData('@ListaFotos')
+
+    console.log('sto:',stoListaFotos)
+
+    if(stoListaFotos.data){
+       listaFotos.push(...stoListaFotos.data)
+    }   
+
+
+   console.log('===================================================(1)')
+   console.log('@ListaFotos (01) :',listaFotos)
+
     const asset = await MediaLibrary.createAssetAsync(capturedPhoto)
-    .then((a)=>{
-      console.log('Salvo:',a)
-      alert('Salvo com suvesso !!!')
-      navigation.goBack()
+    .then((img)=>{
+      
+      foto.id     = img.id
+      foto.dados  = params.dadosCarta
+      foto.imagem = img 
+
+      console.log('foto:',foto)
+
+      listaFotos.push(foto)
+      
+
+      console.log('===================================================')
+      console.log('@ListaFotos (01) :',listaFotos)
+
+      setData('@ListaFotos',listaFotos).then((a)=>{
+          alert('Salvo com suvesso !!!')
+          navigation.goBack()
+      }).catch(err=>{
+        alert('ERRO:',err)
+      })
+
     })
     .catch( err => {
       console.log('Err:',err)

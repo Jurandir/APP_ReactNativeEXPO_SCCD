@@ -11,6 +11,7 @@ import CartaFrete from './src/pages/CartaFrete';
 import DadosFrete from './src/pages/DadosFrete';
 import Imagens from './src/pages/Imagens';
 import Divice  from './src/pages/Device';
+import Pictures from './src/pages/Pictures';
 
 
 const Stack = createStackNavigator();
@@ -69,6 +70,15 @@ export default function App() {
         />
 
         <Stack.Screen name="Imagens" component={Imagens} 
+          options={{
+            headerShown: false,
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#000',
+          }}
+        />
+
+        <Stack.Screen name="Picture" component={Pictures} 
           options={{
             headerShown: false,
             title: '',
