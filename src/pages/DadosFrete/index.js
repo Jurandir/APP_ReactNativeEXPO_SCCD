@@ -88,6 +88,11 @@ export default function DadosFrete( props ) {
     
     setDadosFrete().then(()=>{
       let dadosCarta = params.dadosCarta
+
+      dadosCarta.operacao    = operacao
+      dadosCarta.tipoVeiculo = tipoVeiculo
+      dadosCarta.observacao  = observacao
+
       navigation.navigate('Divice',{dadosCarta})
     })
 
