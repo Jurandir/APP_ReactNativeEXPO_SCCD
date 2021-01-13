@@ -6,6 +6,9 @@ import {  View,
           StyleSheet, 
           Alert
                    } from 'react-native';
+                   
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+                   
 import GetCartaFrete from '../../interface/GetCartaFrete';
 import { delData, getData, setData } from '../../utils/dataStorage';
 
@@ -24,10 +27,50 @@ export default function CartaFrete( { navigation } ) {
   }, []);
 
   const zeraDados = () => {
-    delData('@ListaFotos').then((a)=>{
-      alert('Dados zerados !!!')
+
+    getData('@ListaFotos').then((dados)=>{
+      console.log('@ListaFotos:',dados)
+
+      let qtde_fotos = dados.data.length;
+      console.log('@ListaFotos: qtde:',qtde_fotos) 
+
+
+      Alert.alert('Confirmação:',`
+        (Limpeza de dados)
+
+        Total em memória: ${qtde_fotos}
+        Pendentes de envio: ${qtde_fotos}
+        Fotos já enviadas: ${0}
+       `,
+      [{
+        text: 'Não Realiza a Limpeza',
+        onPress: () => {},
+        style: 'default'
+      },{
+        text: 'Os dados já Enviados',
+        onPress: () => {},
+        style: 'default'
+      },{
+        text: 'Todos os dados',
+        onPress: () => {zeraTodosDados},
+        style: 'default'
+      }],
+      { cancelable: false })
     })
   }
+
+  const zeraTodosDados = () => {
+     delData('@ListaFotos').then((a)=>{
+        alert('Dados zerados !!!')
+     })
+  }
+
+  const zeraDadosJaEnviados = () => {
+    delData('@ListaFotos').then((a)=>{
+       alert('Dados zerados !!!')
+    })
+ }
+
   
   const entrarDetalhes = () => {
     let w = cartaFrete.replace('-','')
@@ -60,7 +103,11 @@ export default function CartaFrete( { navigation } ) {
                   navigation.navigate('DadosFrete',{dadosCarta})
 
               } else {
-                  Alert.alert('Aviso:', ret.message, [{
+                  let msg = ret.message
+                  if (!ret.message) {
+                    msg = 'Problemas com o servidor.'
+                  }
+                  Alert.alert('Aviso:', msg, [{
                     text: 'OK',
                     onPress: () => console.log('OK Pressed'),
                     style: 'default'
@@ -95,6 +142,7 @@ export default function CartaFrete( { navigation } ) {
             style={styles.btnSubmit}
             onPress={ entrarDetalhes }
         >
+          <MaterialCommunityIcons name="location-enter" size={35} color="#FFF" />
           <Text style={styles.submitText}> 
              Entrar  
           </Text>
@@ -104,6 +152,7 @@ export default function CartaFrete( { navigation } ) {
             style={styles.btnSubmit}
             onPress={ sairLogin }
         >
+          <MaterialCommunityIcons name="exit-run" size={35} color="#FFF" />
           <Text style={styles.submitText}> 
               Sair
           </Text>
@@ -113,8 +162,9 @@ export default function CartaFrete( { navigation } ) {
             style={styles.btnSubmit}
             onPress={ zeraDados }
         >
+          <MaterialCommunityIcons name="broom" size={35} color="#FFF" />
           <Text style={styles.submitText}> 
-              Zera Dados
+              Limpeza de Dados
           </Text>
         </TouchableOpacity>        
 
@@ -152,6 +202,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   btnSubmit:{
+    flexDirection: 'row',
     backgroundColor: '#35AAFF',
     width: '90%',
     height: 45,

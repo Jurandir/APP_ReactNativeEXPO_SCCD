@@ -45,12 +45,12 @@ export default function Login( { navigation } ) {
     function keyboardDidShow(){
       Animated.parallel([
         Animated.timing(logo.x, {
-          toValue: 55,
-          duration: 100,
+          toValue: 100,
+          duration: 150,
         }),
         Animated.timing(logo.y, {
-          toValue: 55,
-          duration: 100,
+          toValue: 100,
+          duration: 150,
         }),
       ]).start();
     }

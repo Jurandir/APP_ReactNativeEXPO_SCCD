@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef  } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Image, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 
 import * as Permissions from 'expo-permissions';
@@ -73,7 +75,12 @@ export default function Divice( props ) {
       
       foto.id     = img.id
       foto.dados  = params.dadosCarta
-      foto.imagem = img 
+      foto.imagem = img
+      foto.send  = {
+        success: false,
+        date: null,
+        message: ''
+      } 
 
       console.log('foto:',foto)
 
@@ -136,25 +143,37 @@ export default function Divice( props ) {
           visible={modalOpen}
           >
 
-            <View style={{flex:1, justifyContent: 'center', alignItems: 'center', margin:5}}>
-
-
-                  <View style={{margin: 5, flexDirection: 'row'}}>
-                        <TouchableOpacity style={{margin:5}} onPress={()=> setModalOpen(false)}>
-                          <FontAwesome name="window-close" size={40} color="#FF0000" />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{margin:5}} onPress={savePicture}>
-                          <FontAwesome name="upload" size={40} color="#121212" />
-                        </TouchableOpacity>
-
-                  </View>
-
+            <View style={{flex:1,backgroundColor: '#000', justifyContent: 'center', alignItems: 'center', margin:0}}>
 
                   <Image
-                    style={{width:'100%', height: 455, borderRadius: 20}}
+                    style={{width:'100%', height: 505, borderRadius: 20}}
                     source={{ uri: capturedPhoto }}                  
                   />
+
+                  <View style={{marginTop: 5, flexDirection: 'row'}}>
+
+                        <TouchableOpacity 
+                            style={styles.btnImagens}
+                            onPress={()=> setModalOpen(false)}
+                        >
+                          <AntDesign name="delete" size={35} color="#FFF" />
+                          <Text style={styles.submitText}>
+                             Descartar
+                          </Text>                        
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            style={styles.btnImagens}
+                            onPress={savePicture}
+                        >
+                          <Entypo name="save" size={35} color="#FFF" />
+                          <Text style={styles.submitText}>
+                             Salvar
+                          </Text>                        
+                        </TouchableOpacity>
+
+
+                  </View>
 
 
             </View>
@@ -190,6 +209,22 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
     color: 'white',
+  },
+  btnImagens:{
+    backgroundColor: '#35AAFF',
+    flexDirection: 'row',
+    width: '45%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 7,
+    margin: 5,
+  },
+  submitText:{
+    color: '#FFF',
+    fontSize: 20,
+    marginLeft: 5,
+
   },
 });
 
