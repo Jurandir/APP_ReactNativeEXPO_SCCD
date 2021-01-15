@@ -98,6 +98,23 @@ export default function DadosFrete( props ) {
 
   }
 
+  const showPictures = () => {
+      getData('@ListaFotos').then((sto) =>{
+
+         console.log('(showPictures) STO:',sto)
+         if(!sto.data) {
+            sto.data = []
+         }
+         
+         if(sto.data.length>0) {
+            navigation.navigate('Picture')
+         } else {
+           Alert.alert('Não existe dados relacionados !!!')
+         }
+
+      })
+  }
+
   function ItemModalTipo(props) {   
     function OnPressTipoVeiculo(value) {
       setTipoveiculo(value);
@@ -217,7 +234,7 @@ export default function DadosFrete( props ) {
 
           <TouchableOpacity 
               style={styles.btnImagens}
-              onPress={ () => { navigation.navigate('Picture')}}
+              onPress={ showPictures }
           >
             <Text style={styles.submitText}>
                 Imagens

@@ -4,10 +4,11 @@ import {  View,
           TouchableOpacity,
           Text, 
           StyleSheet, 
-          Alert
+          Alert,
+          BackHandler
                    } from 'react-native';
                    
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
                    
 import GetCartaFrete from '../../interface/GetCartaFrete';
 import { delData, getData, setData } from '../../utils/dataStorage';
@@ -31,7 +32,11 @@ export default function CartaFrete( { navigation } ) {
     getData('@ListaFotos').then((dados)=>{
       console.log('@ListaFotos:',dados)
 
-      let qtde_fotos = dados.data.length;
+       if(!dados.data){
+        dados.data=[]
+       }
+
+      let qtde_fotos = dados.data.length || 0;
       console.log('@ListaFotos: qtde:',qtde_fotos) 
 
 
@@ -52,7 +57,7 @@ export default function CartaFrete( { navigation } ) {
         style: 'default'
       },{
         text: 'Todos os dados',
-        onPress: () => {zeraTodosDados},
+        onPress: () => {zeraTodosDados()},
         style: 'default'
       }],
       { cancelable: false })
@@ -60,15 +65,25 @@ export default function CartaFrete( { navigation } ) {
   }
 
   const zeraTodosDados = () => {
-     delData('@ListaFotos').then((a)=>{
-        alert('Dados zerados !!!')
+
+    console.log('0) ZERA DADOS:')
+
+    delData('@ListaFotos').then((a)=>{
+      console.log('1) ZERA DADOS:',a)
+       setData('@ListaFotos',[]).then((b)=>{
+        
+        Alert.alert('Dados zerados !!!')
+        console.log('2) ZERA DADOS:',b)
+       
+      })
+
      })
   }
 
   const zeraDadosJaEnviados = () => {
-    delData('@ListaFotos').then((a)=>{
-       alert('Dados zerados !!!')
-    })
+    //delData('@ListaFotos').then((a)=>{
+    //  alert('Dados zerados !!!')
+    //})
  }
 
   
@@ -152,9 +167,9 @@ export default function CartaFrete( { navigation } ) {
             style={styles.btnSubmit}
             onPress={ sairLogin }
         >
-          <MaterialCommunityIcons name="exit-run" size={35} color="#FFF" />
+          <AntDesign name="user" size={35} color="#FFF" />
           <Text style={styles.submitText}> 
-              Sair
+              Trocar usuário
           </Text>
         </TouchableOpacity>        
 
@@ -168,6 +183,15 @@ export default function CartaFrete( { navigation } ) {
           </Text>
         </TouchableOpacity>        
 
+        <TouchableOpacity 
+            style={styles.btnSubmit}
+            onPress={ () => BackHandler.exitApp() }
+        >
+          <MaterialCommunityIcons name="exit-run" size={35} color="#FFF" />
+          <Text style={styles.submitText}> 
+              Sair
+          </Text>
+        </TouchableOpacity>        
 
     </View>
   );
@@ -207,13 +231,15 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 45,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     borderRadius: 7,
-    margin: 5,
+    margin: 3,
+
   },
   submitText:{
     color: '#FFF',
     fontSize: 18,
+    marginLeft: 10,
   },
   btnRegister:{
     marginTop: 10,
@@ -224,7 +250,7 @@ const styles = StyleSheet.create({
   LabelTitulo:{
     color: '#FFF',
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 25,
     fontSize: 20
   }
 });

@@ -91,21 +91,17 @@ export default function Divice( props ) {
       console.log('@ListaFotos (01) :',listaFotos)
 
       setData('@ListaFotos',listaFotos).then((a)=>{
-          alert('Salvo com suvesso !!!')
-          navigation.goBack()
+           Alert.alert('Salvo com sucesso !!!')
+           navigation.goBack()
       }).catch(err=>{
-        alert('ERRO:',err)
+           Alert.alert('ERRO:',err)
       })
 
     })
     .catch( err => {
       console.log('Err:',err)
     })
-
   }
-
-
-  // ref={ref => {setCameraRef(ref)}}
 
   return (
       <Camera style={styles.camera} type={type} ref={camRef}>

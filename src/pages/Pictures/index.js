@@ -10,7 +10,7 @@ import {
           StyleSheet,
           StatusBar, 
           Dimensions } from 'react-native';
-import { getData } from '../../utils/dataStorage';
+import { getData, setData } from '../../utils/dataStorage';
 
 const deviceWidth = Dimensions.get('window').width
 import { AntDesign } from '@expo/vector-icons'; 
@@ -20,6 +20,7 @@ export default function Pictures( { navigation } ) {
 
   const [dadosFotos  , setDadosFotos]   = useState({});
   const refFoto = useRef(null)
+  let listaFotos = []
 
 
   const Validade =( {DADOS, INDEX} ) => {
@@ -63,24 +64,15 @@ export default function Pictures( { navigation } ) {
     return { isStatic: true , uri: obj.uri }
   }
 
+  
   const deleteItem = (item) => {
-    let index = item.index
+    let { index, valida }  = item
 
-    Alert.alert(`Esta foto é valida? , (${item.cartaFrete})`, 
-      `
-      Placas: ${item.placas}
-      Operação: ${item.operacao}
-      Tipo: ${item.tipoVeiculo}
-      `, [{
-        text: 'SIM',
-        onPress: () => setValidaFoto(index,true),
-        style: 'default'
-      },{
-        text: 'NÃO',
-        onPress: () => setValidaFoto(index,false),
-        style: 'default'
-      }],
-      { cancelable: false })
+    valida = !valida
+    setValidaFoto(index,valida)
+
+    console.log(' >>>>>>>>>>>>>>>>> deleteItem:',valida)
+
   }
 
   const enviasDados = () => {
@@ -102,17 +94,10 @@ export default function Pictures( { navigation } ) {
 
   const enviaDadosServidor = () => {
 
-    let IDs = ['29897']
-    console.log('Testando....2')
-    MediaLibrary.deleteAssetsAsync(IDs).then((ok)=>{
-      console.log('Excluido:',ok)
-
-      // excluir do asyncStorage  ( xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  )
-
-
-    })
 
   }
+
+
   const setValidaFoto = (index,valida) => {
     let tmp_dados = dadosFotos
     tmp_dados[index].valida = valida
@@ -122,11 +107,13 @@ export default function Pictures( { navigation } ) {
 
   useEffect(() => {   
     (async () => {
-      let stoDadosFotos = await getData('@ListaFotos')
+      let stoListaFotos = await getData('@ListaFotos')
       let varDados      = []
       let index         = 0
 
-      for await ( let it of stoDadosFotos.data ) {
+      console.log('@ListaFotos:',stoListaFotos)
+
+      for await ( let it of stoListaFotos.data ) {
         varDados.push( {id: it.id, 
                         title: it.dados.cartaFrete+' - '+it.dados.operacao, 
                         uri: it.imagem.uri,
@@ -146,21 +133,83 @@ export default function Pictures( { navigation } ) {
 
   }, []);
   
-  const sairTela = () => {
+  const existeMarcadosParaExcluir = async () => {
+    let ret = false
+    for await (let i of dadosFotos) {
+      if(i.valida===false) { ret = true }
+    }
+    return ret
+  }
 
-    Alert.alert('Confirmação:', 'Exclui dados marcados?',
-    [{
-      text: 'SIM',
-      onPress: () => {},
-      style: 'default'
-    },{
-      text: 'NÃO',
-      onPress: () => {},
-      style: 'default'
-    }],
-    { cancelable: false })
+  const sairTela = async () => {
+    
+    let marcados = await existeMarcadosParaExcluir()
+    if (marcados) {
+        Alert.alert('Confirmação:', 'Exclui dados marcados, para exclusão?',
+        [{
+          text: 'SIM',
+          onPress: () => {excluiMarcadosParaExclusao()},
+          style: 'default'
+        },{
+          text: 'NÃO',
+          onPress: () => {},
+          style: 'default'
+        }],
+        { cancelable: false })
+        navigation.goBack()
 
-    navigation.goBack()
+    } else {
+      navigation.goBack()
+    }
+
+
+  }
+
+
+  const excluiMarcadosParaExclusao = async () =>{
+    let IDs = []
+    let newListaFotos = []
+    let ok  = false
+    let idx
+
+    let stoListaFotos = await getData('@ListaFotos')
+    let listaFotos = stoListaFotos.data
+    console.log('####################### listaFotos',listaFotos)
+
+
+    for await ( let i of dadosFotos) {   
+      idx = i.index
+      if(!i.valida) {
+        IDs.push( i.id )
+      } else {
+
+        console.log(`listaFotos[${idx}] : ${listaFotos[idx]}`)
+
+        if(listaFotos[idx]) {
+          console.log('idx',idx)
+          newListaFotos.push( listaFotos[idx] )
+        }  
+      }
+    }
+
+
+
+    if(IDs) {     
+
+      await MediaLibrary.deleteAssetsAsync(IDs).then((ok)=>{
+        console.log('Midia Excluida:',ok)
+
+        console.log('(Picture-excluiMarcadosParaExclusao)  newListaFotos:',newListaFotos)
+
+        setData('@ListaFotos',newListaFotos).then((a)=>{
+          Alert.alert('Dados excluido com sucesso.')
+          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++')
+          console.log(a)
+          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++')
+        })
+      })
+
+    }
   }
 
   return (
