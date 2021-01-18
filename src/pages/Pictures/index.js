@@ -16,6 +16,9 @@ const deviceWidth = Dimensions.get('window').width
 import { AntDesign } from '@expo/vector-icons'; 
 import * as MediaLibrary from 'expo-media-library';
 
+
+import SendForm from '../../../Test/Test_FormData'
+
 export default function Pictures( { navigation } ) {
 
   const [dadosFotos  , setDadosFotos]   = useState({});
@@ -94,6 +97,7 @@ export default function Pictures( { navigation } ) {
 
   const enviaDadosServidor = () => {
 
+    SendForm()
 
   }
 
