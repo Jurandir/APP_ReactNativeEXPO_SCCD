@@ -29,34 +29,40 @@ export default function CartaFrete( { navigation } ) {
 
   const zeraDados = () => {
 
-    getData('@ListaFotos').then((dados)=>{
+    getData('@ListaFotos').then( async (dados)=>{
       console.log('@ListaFotos:',dados)
 
        if(!dados.data){
         dados.data=[]
        }
 
-      let qtde_fotos = dados.data.length || 0;
-      console.log('@ListaFotos: qtde:',qtde_fotos) 
+      let qtde_fotos        = dados.data.length || 0
+      let qtde_enviados = 0
+      
+      for await (let item of dados.data) {
+        console.log(item)
+        if(item.send.success) {
+          qtde_enviados++
+        }
+      }
 
-
-      Alert.alert('Confirmação:',`
-        (Limpeza de dados)
+      Alert.alert('Status:',`
+        (Memória:)
 
         Total em memória: ${qtde_fotos}
-        Pendentes de envio: ${qtde_fotos}
-        Fotos já enviadas: ${0}
+        Pendentes de envio: ${ qtde_fotos - qtde_enviados }
+        Registros já enviados: ${qtde_enviados}
        `,
       [{
-        text: 'Não Realiza a Limpeza',
+        text: 'Retornar',
         onPress: () => {},
         style: 'default'
       },{
-        text: 'Os dados já Enviados',
-        onPress: () => {},
+        text: 'Zera dados já Enviados',
+        onPress: () => {zeraDadosJaEnviados()},
         style: 'default'
       },{
-        text: 'Todos os dados',
+        text: 'Zera Todos os Dados',
         onPress: () => {zeraTodosDados()},
         style: 'default'
       }],
@@ -65,18 +71,10 @@ export default function CartaFrete( { navigation } ) {
   }
 
   const zeraTodosDados = () => {
-
-    console.log('0) ZERA DADOS:')
-
     delData('@ListaFotos').then((a)=>{
-      console.log('1) ZERA DADOS:',a)
-       setData('@ListaFotos',[]).then((b)=>{
-        
+       setData('@ListaFotos',[]).then((b)=>{        
         Alert.alert('Dados zerados !!!')
-        console.log('2) ZERA DADOS:',b)
-       
       })
-
      })
   }
 

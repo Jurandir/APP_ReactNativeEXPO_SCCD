@@ -1,27 +1,44 @@
 import axios from 'axios'
+import env from  '../utils/environment'
 
-async function SendForm(method, url, bodyFormData, file, token ) {
-    let headers = {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": 'multipart/form-data'
-      }
+const url = env.API_UPLOAD
 
-    axios({
-        method: method,
-        url: url,
-        data: bodyFormData,
-        headers: headers
+const SendForm = function ( data, imagem, token ) {
+    return new Promise( function(resolve, reject) {
+        const method   = 'POST'
+        const formData = new FormData()
+        const api      = url
+        const file     = imagem.file
+        const filename = imagem.filename
+
+
+        formData.append('data', JSON.stringify(data))
+
+        formData.append('file', {
+                uri: file,
+                type: 'image/jpeg', 
+                name: filename,
+        })
+    
+        axios({
+        url    : api,
+        method : method,
+        data   : formData,
+        headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer "${token}"`
+            }
         })
         .then(function (response) {
-            //handle success
-            console.log(response);
+                console.log('SUCESSO:',filename);
+                resolve( {success: true, message: 'Success. OK.', id: data.id } )
         })
-        .catch(function (response) {
-            //handle error
-            console.log(response);
-        }
-    )
+        .catch(function (err) {
+                console.log('ERRO:',"from image (SendForm) :",err);
+                rejeita( {success: false, message: err, id: data.id} )
+        })
+    })    
 }
 
 export default SendForm
-

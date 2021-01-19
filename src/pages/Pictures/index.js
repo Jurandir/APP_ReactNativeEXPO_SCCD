@@ -13,18 +13,19 @@ import {
 import { getData, setData } from '../../utils/dataStorage';
 
 const deviceWidth = Dimensions.get('window').width
-import { AntDesign } from '@expo/vector-icons'; 
+
+import { AntDesign } from '@expo/vector-icons' ;
 import * as MediaLibrary from 'expo-media-library';
+import SendForm from '../../utils/SendForm';
 
-
-import SendForm from '../../../Test/Test_FormData'
 
 export default function Pictures( { navigation } ) {
 
-  const [dadosFotos  , setDadosFotos]   = useState({});
-  const refFoto = useRef(null)
-  let listaFotos = []
+  const [ dadosFotos, setDadosFotos ]   = useState({});
+  const [ credencial, setCredencial ]   = useState({});
+  const refFoto                       = useRef(null)
 
+  // let listaFotos = []
 
   const Validade =( {DADOS, INDEX} ) => {
     let icon_name  = dadosFotos[INDEX].valida ? 'check' : 'close'
@@ -35,12 +36,15 @@ export default function Pictures( { navigation } ) {
     </View>
   )}
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+    // console.log('RENDER_ITEM ITEM:',item)
+    return (
     <Item ITEM={item}/>
-  );
+  )};
 
   const Item = ( params ) => { 
-    let valida = dadosFotos[params.ITEM.index].valida
+    let valida  = dadosFotos[params.ITEM.index].valida
+    let enviada = dadosFotos[params.ITEM.index].enviada
     return (
     <View style={styles.item}>
       <Text style={styles.LabelTitulo}>{params.ITEM.title}</Text>
@@ -50,16 +54,17 @@ export default function Pictures( { navigation } ) {
       />
 
       <Validade DADOS={dadosFotos} INDEX={params.ITEM.index}/>
-
+     
+      { !enviada &&
       <TouchableOpacity style={styles.delete} onPress={()=>deleteItem(params.ITEM,params)}>
           <AntDesign name="delete" size={35} color="#FFF" />
-      </TouchableOpacity>
+      </TouchableOpacity> }
 
       <Text style={styles.filename}>{'Placas: '+params.ITEM.placas}</Text>
       <Text style={styles.filename}>{'Motorista: '+params.ITEM.motorista}</Text>
       <Text style={styles.filename}>{'Tipo Veículo: '+params.ITEM.tipoVeiculo}</Text>
       <Text style={styles.filename}>{'Obs: '+params.ITEM.observacao}</Text>
-      <Text style={styles.filename}>{'Valida: '+params.ITEM.valida}</Text>
+      <Text style={styles.filename}>{'Válida: '+valida+',  Enviada: '+enviada}</Text>
     </View>
   )};
 
@@ -95,12 +100,53 @@ export default function Pictures( { navigation } ) {
       { cancelable: false })
   }
 
-  const enviaDadosServidor = () => {
+  const enviaDadosServidor = async () => {
 
-    SendForm()
+    let data = {}
+    let imagem = {}
+
+    let token = credencial.data.token
+
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    
+    let listaEnvios = []
+    let imagensIDs = []
+    for await (let foto of dadosFotos) {
+      imagem = {
+        file: foto.uri,
+        filename: foto.filename
+      }
+     
+      data = {
+        id: foto.id,
+        cartaFrete: foto.cartaFrete,
+        date: foto.date,
+        motorista: foto.motorista,
+        placas: foto.placas,
+        observacao: foto.observacao,
+        operacao: foto.operacao,
+        tipoVeiculo: foto.tipoVeiculo,
+        tipoDocumento: "SCCD"
+      }
+      
+      if( (foto.valida) && (!foto.enviada) ) {
+        listaEnvios.push( 
+            SendForm(data, imagem, token)
+            .then((ret)=>{
+                if(ret.success) {
+                  imagensIDs.push(ret.id)
+                }  
+            })
+        )  
+      }
+
+    }
+
+    await Promise.all(listaEnvios)
+    await setFotosEnviadas(imagensIDs)
+    Alert.alert('Fotos enviadas com sucesso !!!')
 
   }
-
 
   const setValidaFoto = (index,valida) => {
     let tmp_dados = dadosFotos
@@ -109,30 +155,71 @@ export default function Pictures( { navigation } ) {
     refFoto.current.forceUpdate()
   }
 
+  const setFotosEnviadas = async (IDs) => {
+    let tmp_Lista     = await getData('@ListaFotos')
+    let tmp_dados     = dadosFotos
+    let idx
+    
+    for await (let foto of dadosFotos){
+      idx = foto.index
+      if(IDs.includes(foto.id) ) {
+        tmp_dados[idx].enviada = true
+        tmp_Lista.data[idx].send.success = true
+        tmp_Lista.data[idx].send.message = 'OK'
+        tmp_Lista.data[idx].send.date    =  new Date()
+      }
+    }
+
+    setDadosFotos(tmp_dados)
+    refFoto.current.forceUpdate()
+
+    await setData('@ListaFotos',tmp_Lista.data)
+          .then((a)=>{
+
+
+               console.log('@ListaFotos - Salvo.',tmp_Lista.data)
+
+          }).catch(err=>{
+               Alert.alert('ERRO:',err)
+    })
+
+  }
+
+
+
   useEffect(() => {   
     (async () => {
+
+      let stoCredencial = await getData('@Credencial')
       let stoListaFotos = await getData('@ListaFotos')
       let varDados      = []
       let index         = 0
 
+      console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW')
       console.log('@ListaFotos:',stoListaFotos)
+      console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW')
 
       for await ( let it of stoListaFotos.data ) {
         varDados.push( {id: it.id, 
                         title: it.dados.cartaFrete+' - '+it.dados.operacao, 
                         uri: it.imagem.uri,
+                        filename: it.imagem.filename,
                         cartaFrete: it.dados.cartaFrete,
-                        data: it.dados.data,
+                        date: it.dados.data,
                         motorista: it.dados.motorista,
                         placas: it.dados.placas,
                         observacao: it.dados.observacao || '',
                         operacao: it.dados.operacao,
                         tipoVeiculo: it.dados.tipoVeiculo,
                         valida: true,
+                        enviada: it.send.success,
                         index: index++,
            })
       }
+
+      setCredencial(stoCredencial)
       setDadosFotos( varDados )
+
     })();
 
   }, []);
@@ -169,7 +256,7 @@ export default function Pictures( { navigation } ) {
 
   }
 
-
+// ============== (EXCLUIR MARCADOS)
   const excluiMarcadosParaExclusao = async () =>{
     let IDs = []
     let newListaFotos = []
@@ -178,42 +265,26 @@ export default function Pictures( { navigation } ) {
 
     let stoListaFotos = await getData('@ListaFotos')
     let listaFotos = stoListaFotos.data
-    console.log('####################### listaFotos',listaFotos)
-
 
     for await ( let i of dadosFotos) {   
       idx = i.index
       if(!i.valida) {
         IDs.push( i.id )
       } else {
-
-        console.log(`listaFotos[${idx}] : ${listaFotos[idx]}`)
-
         if(listaFotos[idx]) {
-          console.log('idx',idx)
           newListaFotos.push( listaFotos[idx] )
         }  
       }
     }
 
-
-
     if(IDs) {     
-
       await MediaLibrary.deleteAssetsAsync(IDs).then((ok)=>{
-        console.log('Midia Excluida:',ok)
-
-        console.log('(Picture-excluiMarcadosParaExclusao)  newListaFotos:',newListaFotos)
-
         setData('@ListaFotos',newListaFotos).then((a)=>{
           Alert.alert('Dados excluido com sucesso.')
-          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++')
-          console.log(a)
-          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++')
         })
       })
-
     }
+
   }
 
   return (
