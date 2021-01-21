@@ -1,8 +1,6 @@
 import React from 'react';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import Home from './src/pages/Home';
 import Sobre from './src/pages/Sobre';
 import TelaMapa from './src/pages/TelaMapa';
@@ -12,7 +10,6 @@ import DadosFrete from './src/pages/DadosFrete';
 import Imagens from './src/pages/Imagens';
 import Divice  from './src/pages/Device';
 import Pictures from './src/pages/Pictures';
-
 
 const Stack = createStackNavigator();
 
@@ -100,7 +97,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-
-// APP
-

@@ -1,12 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {  View, 
-          KeyboardAvoidingView, 
-          TextInput, 
-          TouchableOpacity, 
-          Text, 
-          StyleSheet, 
-          Animated, 
-          Keyboard,
+import {  View,           KeyboardAvoidingView, 
+          TextInput,      TouchableOpacity, 
+          Text,           StyleSheet, 
+          Animated,       Keyboard,
           Alert
            } from 'react-native';
 import CheckUser from '../../auth/CheckUser';
@@ -70,12 +66,10 @@ export default function Login( { navigation } ) {
 
   }, []);
 
+  // VALIDA USUARIO EM API
   function userLogin() {
-    
     setData('@user',{username: userName,  }) 
-
     CheckUser(userName,userPassword).then((ret)=>{
-
         if(ret.success) {
             navigation.navigate('CartaFrete')    
         } else {
@@ -91,6 +85,7 @@ export default function Login( { navigation } ) {
     })
   }
 
+  // VISUAL REACT
   return (
     <KeyboardAvoidingView style={styles.background}>
         <View style={styles.containerLogo}>
@@ -156,13 +151,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#191919',
-
   },
   containerLogo:{
     flex:1,
     justifyContent: 'center',
     paddingTop: 10,
- 
   },
   container:{
     flex:1,
@@ -170,7 +163,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '90%',
     paddingBottom: 20,
-    
   },
   input:{
     backgroundColor: '#FFF',
@@ -180,7 +172,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderRadius: 7,
     padding: 10,
-
   },
   btnSubmit:{
     backgroundColor: '#35AAFF',
@@ -189,12 +180,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 7,
-
   },
   submitText:{
     color: '#FFF',
     fontSize: 18,
-
   },
 });
-

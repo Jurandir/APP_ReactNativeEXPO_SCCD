@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -108,6 +107,3 @@ const styles = StyleSheet.create({
 
   },  
 });
-
-
-// SOBRE

@@ -39,7 +39,6 @@ const Item = ({ title }) => (
   </View>
 );
 
-
 function ImagemAnteriorScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -169,6 +168,3 @@ const styles = StyleSheet.create({
   }
 
 });
-
-
-// IMAGENS

@@ -11,7 +11,6 @@ const SendForm = function ( data, imagem, token ) {
         const file     = imagem.file
         const filename = imagem.filename
 
-
         formData.append('data', JSON.stringify(data))
 
         formData.append('file', {
@@ -31,11 +30,9 @@ const SendForm = function ( data, imagem, token ) {
             }
         })
         .then(function (response) {
-                console.log('SUCESSO:',filename);
                 resolve( {success: true, message: 'Success. OK.', id: data.id } )
         })
         .catch(function (err) {
-                console.log('ERRO:',"from image (SendForm) :",err);
                 rejeita( {success: false, message: err, id: data.id} )
         })
     })    

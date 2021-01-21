@@ -5,10 +5,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
-
 import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from 'expo-media-library';
-
 import { getData, setData } from '../../utils/dataStorage';
  
 
@@ -22,18 +20,15 @@ export default function Divice( props ) {
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [modalOpen,setModalOpen] = useState(false);
 
-  useEffect(() => {
-    
+  useEffect(() => {  
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
-
     (async () => {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       setHasPermission(status === 'granted');
     })();
-
   }, []);
 
   if (hasPermission === null) {
@@ -44,6 +39,7 @@ export default function Divice( props ) {
     return <Text>No access to camera</Text>;
   }
 
+  // CAPTURA IMAGEM DA CÂMERA
   async function takePicture(){
     if(camRef){
       const data = await camRef.current.takePictureAsync();
@@ -53,26 +49,18 @@ export default function Divice( props ) {
     }
   }
 
+  // SALVA IMAGEM CAPTURADA NA GALERIA DO CELULAR
   async function savePicture(){
-    
-    let listaFotos = []
-    let foto       = {id:0, dados:{}, imagem:{}}
-
+    let listaFotos      = []
+    let foto            = {id:0, dados:{}, imagem:{}}
     const stoListaFotos = await getData('@ListaFotos')
-
-    console.log('sto:',stoListaFotos)
 
     if(stoListaFotos.data){
        listaFotos.push(...stoListaFotos.data)
     }   
 
-
-   console.log('===================================================(1)')
-   console.log('@ListaFotos (01) :',listaFotos)
-
     const asset = await MediaLibrary.createAssetAsync(capturedPhoto)
-    .then((img)=>{
-      
+    .then((img)=>{     
       foto.id     = img.id
       foto.dados  = params.dadosCarta
       foto.imagem = img
@@ -82,13 +70,7 @@ export default function Divice( props ) {
         message: ''
       } 
 
-      console.log('foto:',foto)
-
       listaFotos.push(foto)
-      
-
-      console.log('===================================================')
-      console.log('@ListaFotos (01) :',listaFotos)
 
       setData('@ListaFotos',listaFotos).then((a)=>{
            Alert.alert('Salvo com sucesso !!!')
@@ -96,13 +78,13 @@ export default function Divice( props ) {
       }).catch(err=>{
            Alert.alert('ERRO:',err)
       })
-
     })
     .catch( err => {
       console.log('Err:',err)
     })
   }
-
+  
+  // VISUAL REACT
   return (
       <Camera style={styles.camera} type={type} ref={camRef}>
         <View style={styles.buttonContainer}>
@@ -168,16 +150,11 @@ export default function Divice( props ) {
                           </Text>                        
                         </TouchableOpacity>
 
-
                   </View>
-
 
             </View>
           </Modal>
-
-
           }
-
 
         </View>
       </Camera>
@@ -220,7 +197,5 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 20,
     marginLeft: 5,
-
   },
 });
-

@@ -1,18 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import { AntDesign } from '@expo/vector-icons';
-
-import {  Alert,
-          View,
-          Modal, 
-          SafeAreaView,
-          TextInput, 
-          TouchableOpacity,
-          TouchableHighlight,
-          Text, 
+import {  Alert,          View,
+          Modal,          SafeAreaView,
+          TextInput,      TouchableOpacity,
+          TouchableHighlight,          Text, 
           StyleSheet 
              } from 'react-native';
 import { getData, setData } from '../../utils/dataStorage';
+
 
 export default function DadosFrete( props ) {
   const { navigation } = props 
@@ -31,9 +26,7 @@ export default function DadosFrete( props ) {
   const [codigo   , setCodigo]    = useState(null);    
   const [emissao  , setEmissao]   = useState(null);    
 
-
   useEffect( () => {
-
     if(params) {
       setCartafrete(params.dadosCarta.cartaFrete);
       setPlacas(params.dadosCarta.placas);
@@ -43,9 +36,6 @@ export default function DadosFrete( props ) {
       setEmissao(params.dadosCarta.data);
       setOperacao('CARGA')
       setTipoveiculo('NORMAL')
-
-      console.log('===>PARAMETROS:',params)
-
     } else {
       getData('@CartaFrete').then((sto) =>{
         setCartafrete(sto.data.cartaFrete);
@@ -54,9 +44,6 @@ export default function DadosFrete( props ) {
         setEmpresa(sto.data.empresa);
         setCodigo(sto.data.codigo);
         setEmissao(sto.data.data);
-
-        console.log('===>STO @CartaFrete:',sto)
-
       })
 
       getData('@DadosFrete').then((sto) => {        
@@ -65,13 +52,11 @@ export default function DadosFrete( props ) {
           setTipoveiculo(sto.data.dadosFrete.tipoVeiculo );
           setObservacao( sto.data.dadosFrete.observacao  );
         }
-        console.log('===>STO @DadosFrete:',sto)
       })
-
     }
-      
   }, []);
 
+  // GRAVA EM MEMÓRIA INTERNA (dadosFrete)
   const setDadosFrete = async () => {
     let dadosFrete = {
       placas: placas,
@@ -84,37 +69,32 @@ export default function DadosFrete( props ) {
     setData('@DadosFrete',{ dadosFrete: dadosFrete })
   }
 
+  // NAVEGA PARA TELA PARA FOTOGRAFAR
   const fotografar = () => {
-    
     setDadosFrete().then(()=>{
       let dadosCarta = params.dadosCarta
-
       dadosCarta.operacao    = operacao
       dadosCarta.tipoVeiculo = tipoVeiculo
       dadosCarta.observacao  = observacao
-
       navigation.navigate('Divice',{dadosCarta})
     })
-
   }
 
+  // NAVEGA PARA TELA DE LISTA DE FOTOS A ENVIAR
   const showPictures = () => {
       getData('@ListaFotos').then((sto) =>{
-
-         console.log('(showPictures) STO:',sto)
          if(!sto.data) {
             sto.data = []
-         }
-         
+         }         
          if(sto.data.length>0) {
             navigation.navigate('Picture')
          } else {
            Alert.alert('Não existe dados relacionados !!!')
          }
-
       })
   }
 
+  // TELA MODAL TIPO DE VEICULO
   function ItemModalTipo(props) {   
     function OnPressTipoVeiculo(value) {
       setTipoveiculo(value);
@@ -130,6 +110,7 @@ export default function DadosFrete( props ) {
     )
   }
 
+  // TELA MODAL TIPO DE OPERAÇÃO
   function ItemModalOperacao(props) {
     function OnPressOperacao(value) {
       setOperacao(value);
@@ -145,6 +126,7 @@ export default function DadosFrete( props ) {
     )
   }
 
+  // VISUAL REACT
   return (
     <SafeAreaView style={styles.background}>
 
@@ -253,8 +235,6 @@ export default function DadosFrete( props ) {
 
           </TouchableOpacity>        
         </View>
-
-
         
         <Modal
           animationType="slide"
@@ -273,10 +253,6 @@ export default function DadosFrete( props ) {
               </View>
             </View>
         </Modal>
-
-
-
-
 
         <Modal
           animationType="slide"
@@ -297,9 +273,6 @@ export default function DadosFrete( props ) {
             </View>
       </Modal>
 
-
-
-
     </SafeAreaView>
   );
 }
@@ -310,7 +283,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#191919',
-
   },
   containerBTN:{
     flexDirection: 'row',
@@ -318,7 +290,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#191919',
     marginTop:20,
-
   },
   container:{
     flex:1,
@@ -326,7 +297,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '90%',
     paddingBottom: 10,
-    
   },
   input:{
     backgroundColor: '#FFF',
@@ -379,24 +349,11 @@ const styles = StyleSheet.create({
   submitText:{
     color: '#FFF',
     fontSize: 20,
-
-  },
-  scrollView: {
-    marginHorizontal: 5,
   },
   LabelText:{
     color: '#FFF',
     textAlign: "left",
     alignSelf: 'stretch',
-    marginLeft: 20,
-  },
-  LabelTituloBTN:{
-    color: '#FFF',
-    backgroundColor: "#35AAFF",
-    borderRadius: 5,    
-    textAlign: "left",
-    alignSelf: 'baseline',
-    padding: 2,
     marginLeft: 20,
   },
   LabelTitulo:{
@@ -452,6 +409,5 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2
   },    
-
 });
 

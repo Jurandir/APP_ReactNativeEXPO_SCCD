@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 
 export default class TelaMapa extends React.Component {
   render() {

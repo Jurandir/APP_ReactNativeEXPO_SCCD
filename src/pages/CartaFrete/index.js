@@ -1,52 +1,40 @@
 import React, {useState, useEffect} from 'react';
-import {  View, 
-          TextInput, 
+import {  View,  TextInput, 
           TouchableOpacity,
-          Text, 
-          StyleSheet, 
-          Alert,
-          BackHandler
+          Text,  StyleSheet, 
+          Alert, BackHandler
                    } from 'react-native';
                    
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import * as MediaLibrary from 'expo-media-library';
-                   
+import * as MediaLibrary from 'expo-media-library';                  
 import GetCartaFrete from '../../interface/GetCartaFrete';
 import { delData, getData, setData } from '../../utils/dataStorage';
 
+// CARTAFRETE
 export default function CartaFrete( { navigation } ) {
-
   const [cartaFrete  , setCartafrete]   = useState(''); 
 
-
   useEffect(() => {
-    
     (async () => {
       let stoCartaFrete = await getData('@CartaFrete')
       setCartafrete(stoCartaFrete.data.cartaFrete);
     })();
-
   }, []);
 
+  // MOSTRA OPÇÕES PARA ZERAR DADOS ()
   const zeraDados = () => {
 
     getData('@ListaFotos').then( async (dados)=>{
-      console.log('@ListaFotos:',dados)
-
        if(!dados.data){
         dados.data=[]
        }
-
       let qtde_fotos        = dados.data.length || 0
-      let qtde_enviados = 0
-      
+      let qtde_enviados = 0     
       for await (let item of dados.data) {
-        console.log(item)
         if(item.send.success) {
           qtde_enviados++
         }
       }
-
       Alert.alert('Status:',`
         (Memória:)
 
@@ -71,6 +59,7 @@ export default function CartaFrete( { navigation } ) {
     })
   }
 
+  // OPÇÃO PARA DELETAR TODOS OS DADOS
   const zeraTodosDados = () => {
     delData('@ListaFotos').then((a)=>{
        setData('@ListaFotos',[]).then((b)=>{        
@@ -79,6 +68,7 @@ export default function CartaFrete( { navigation } ) {
      })
   }
 
+  // OPÇÃO PARA DELETAR OS DADOS DE FOTOS JÁ ENVIADAS
   const zeraDadosJaEnviados = async () => {
     let IDs = []
     let newListaFotos = []
@@ -92,7 +82,6 @@ export default function CartaFrete( { navigation } ) {
           newListaFotos.push( i )
       }
     }
-
     if(IDs) {     
       await MediaLibrary.deleteAssetsAsync(IDs).then((ok)=>{
         setData('@ListaFotos',newListaFotos).then((a)=>{
@@ -102,11 +91,10 @@ export default function CartaFrete( { navigation } ) {
     } else {
       Alert.alert('Não há dados enviados para excluir !!!')
     }
-
  }
 
-  
-  const entrarDetalhes = () => {
+ // NAVEGAR PARA PAGINA DE DETALHES 
+ const entrarDetalhes = () => {
     let w = cartaFrete.replace('-','')
     let emp = w.substring(0,3)
     let cod = w.substring(3,12).replace(/([^\d])+/gim, '');
@@ -121,7 +109,6 @@ export default function CartaFrete( { navigation } ) {
         if (success) {
             token = sto.data.token
             GetCartaFrete(emp,cod,token).then((ret)=>{
-              //console.log('API CARTAFRETE:',ret)
               success = ret.success  
               if (success) {
                 let dadosCarta = 
@@ -133,7 +120,6 @@ export default function CartaFrete( { navigation } ) {
                     data: ret.DATA
                   }
                   setData('@CartaFrete',dadosCarta)
-
                   navigation.navigate('DadosFrete',{dadosCarta})
 
               } else {
@@ -153,10 +139,12 @@ export default function CartaFrete( { navigation } ) {
     })
   }
 
+  // NAVEGAR PARA TELA DE LOGIN
   const sairLogin = () => {
     navigation.navigate('Login')
   }
 
+  // VISUAL REACT
   return (
     <View style={styles.background}>
 
@@ -223,11 +211,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#191919',
   },
-  containerLogo:{
-    flex:1,
-    justifyContent: 'center',
-    paddingTop: 10,
-  },
   container:{
     flex:1,
     alignItems: 'center',
@@ -253,18 +236,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     borderRadius: 7,
     margin: 3,
-
   },
   submitText:{
     color: '#FFF',
     fontSize: 18,
     marginLeft: 10,
-  },
-  btnRegister:{
-    marginTop: 10,
-  },
-  RegisterText:{
-    color: '#FFF',
   },
   LabelTitulo:{
     color: '#FFF',

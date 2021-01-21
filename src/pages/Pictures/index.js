@@ -1,31 +1,21 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {  
-          Alert,
-          View, 
-          SafeAreaView,
-          FlatList,
-          Image, 
-          TouchableOpacity,
-          Text, 
-          StyleSheet,
-          StatusBar, 
-          Dimensions } from 'react-native';
+import {  Alert,            View, 
+          SafeAreaView,     FlatList,
+          Image,            TouchableOpacity,
+          Text,             StyleSheet,
+          StatusBar,        Dimensions } from 'react-native';
 import { getData, setData } from '../../utils/dataStorage';
-
-const deviceWidth = Dimensions.get('window').width
-
 import { AntDesign } from '@expo/vector-icons' ;
 import * as MediaLibrary from 'expo-media-library';
 import SendForm from '../../utils/SendForm';
 
+const deviceWidth = Dimensions.get('window').width
 
 export default function Pictures( { navigation } ) {
 
   const [ dadosFotos, setDadosFotos ]   = useState({});
   const [ credencial, setCredencial ]   = useState({});
-  const refFoto                       = useRef(null)
-
-  // let listaFotos = []
+  const refFoto                         = useRef(null)
 
   const Validade =( {DADOS, INDEX} ) => {
     let icon_name  = dadosFotos[INDEX].valida ? 'check' : 'close'
@@ -36,12 +26,13 @@ export default function Pictures( { navigation } ) {
     </View>
   )}
 
+  // TELA DE APRESENTAÇÃO DA FOTO / DADOS
   const renderItem = ({ item }) => {
-    // console.log('RENDER_ITEM ITEM:',item)
     return (
     <Item ITEM={item}/>
-  )};
+  )}
 
+  // ITEM FOTO/DADOS
   const Item = ( params ) => { 
     let valida  = dadosFotos[params.ITEM.index].valida
     let enviada = dadosFotos[params.ITEM.index].enviada
@@ -68,25 +59,20 @@ export default function Pictures( { navigation } ) {
     </View>
   )};
 
+  // MONTA JSON IMAGEM
   const getImagem = (obj) =>{
     return { isStatic: true , uri: obj.uri }
   }
 
-  
+  // APAGA ITEM
   const deleteItem = (item) => {
     let { index, valida }  = item
-
     valida = !valida
     setValidaFoto(index,valida)
-
-    console.log(' >>>>>>>>>>>>>>>>> deleteItem:',valida)
-
   }
 
+  // ENVIA DADOS PARA API - ALERT
   const enviasDados = () => {
-
-    console.log('Testando....1')
-
     Alert.alert('Confirmação:', 'Envia dados para o servidor?',
       [{
         text: 'SIM',
@@ -100,17 +86,14 @@ export default function Pictures( { navigation } ) {
       { cancelable: false })
   }
 
+  // ENVIA DADOS PARA API
   const enviaDadosServidor = async () => {
-
     let data = {}
     let imagem = {}
-
-    let token = credencial.data.token
-
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    
+    let token = credencial.data.token    
     let listaEnvios = []
     let imagensIDs = []
+
     for await (let foto of dadosFotos) {
       imagem = {
         file: foto.uri,
@@ -146,9 +129,6 @@ export default function Pictures( { navigation } ) {
 
     setFotosEnviadas(imagensIDs)
     .then((ret)=>{
-      
-      console.log('RET=',ret)
-
       if(ret.qtde>0){
         Alert.alert(`(${ret.qtde}), Fotos enviadas com sucesso !!!`)
       } else
@@ -162,6 +142,7 @@ export default function Pictures( { navigation } ) {
 
   }
 
+  // SETA SE É UMA FOTO VALIDA (TRUE/FALSE)
   const setValidaFoto = (index,valida) => {
     let tmp_dados = dadosFotos
     tmp_dados[index].valida = valida
@@ -169,6 +150,7 @@ export default function Pictures( { navigation } ) {
     refFoto.current.forceUpdate()
   }
 
+  // SETA PARA "TRUE" AS FOTOS ENVIADAS
   const setFotosEnviadas = async (IDs) => {
     let tmp_Lista     = await getData('@ListaFotos')
     let tmp_dados     = dadosFotos
@@ -188,7 +170,6 @@ export default function Pictures( { navigation } ) {
     
     let ret = { success: true, qtde: tmp_qtde, message:'' }
 
-
     setDadosFotos(tmp_dados)
     refFoto.current.forceUpdate()
 
@@ -200,26 +181,15 @@ export default function Pictures( { navigation } ) {
             ret.qtde = -1
             ret.message = 'ERRO: '+err
           })
-
-    console.log('RET: Pictures(setFotosEnviadas):',ret)
-
     return ret
-
   }
-
-
 
   useEffect(() => {   
     (async () => {
-
       let stoCredencial = await getData('@Credencial')
       let stoListaFotos = await getData('@ListaFotos')
       let varDados      = []
       let index         = 0
-
-      console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW')
-      console.log('@ListaFotos:',stoListaFotos)
-      console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW')
 
       for await ( let it of stoListaFotos.data ) {
         varDados.push( {id: it.id, 
@@ -246,6 +216,7 @@ export default function Pictures( { navigation } ) {
 
   }, []);
   
+  // VERIFICA SE EXISTE FOTOS MARCADAS PARA EXCLUIR
   const existeMarcadosParaExcluir = async () => {
     let ret = false
     for await (let i of dadosFotos) {
@@ -254,8 +225,8 @@ export default function Pictures( { navigation } ) {
     return ret
   }
 
-  const sairTela = async () => {
-    
+  // SAIDA DA TELA E NAVEGAÇÃO PARA TELA ANTERIOR
+  const sairTela = async () => {  
     let marcados = await existeMarcadosParaExcluir()
     if (marcados) {
         Alert.alert('Confirmação:', 'Exclui dados marcados, para exclusão?',
@@ -274,17 +245,14 @@ export default function Pictures( { navigation } ) {
     } else {
       navigation.goBack()
     }
-
-
   }
 
-// ============== (EXCLUIR MARCADOS)
+  // EXCLUIR FOTOS MARCADAS COMO NÃO VALIDAS
   const excluiMarcadosParaExclusao = async () =>{
     let IDs = []
     let newListaFotos = []
     let ok  = false
     let idx
-
     let stoListaFotos = await getData('@ListaFotos')
     let listaFotos = stoListaFotos.data
 
@@ -306,9 +274,9 @@ export default function Pictures( { navigation } ) {
         })
       })
     }
-
   }
 
+  // VISUAL REACT
   return (
     <View style={styles.background}>
 
@@ -433,7 +401,5 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: 'row',
-
   },
-
 });
