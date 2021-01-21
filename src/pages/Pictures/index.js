@@ -143,8 +143,22 @@ export default function Pictures( { navigation } ) {
     }
 
     await Promise.all(listaEnvios)
-    await setFotosEnviadas(imagensIDs)
-    Alert.alert('Fotos enviadas com sucesso !!!')
+
+    setFotosEnviadas(imagensIDs)
+    .then((ret)=>{
+      
+      console.log('RET=',ret)
+
+      if(ret.qtde>0){
+        Alert.alert(`(${ret.qtde}), Fotos enviadas com sucesso !!!`)
+      } else
+      if(ret.qtde===0){
+        Alert.alert('Não há fotos disponíveis para envio !!!')
+      } else  
+      if(ret.qtde===-1){
+        Alert.alert('Problemas no envio !!!')
+      }
+    })
 
   }
 
@@ -158,30 +172,38 @@ export default function Pictures( { navigation } ) {
   const setFotosEnviadas = async (IDs) => {
     let tmp_Lista     = await getData('@ListaFotos')
     let tmp_dados     = dadosFotos
+    let tmp_qtde      = 0
     let idx
     
     for await (let foto of dadosFotos){
       idx = foto.index
       if(IDs.includes(foto.id) ) {
+        tmp_qtde++
         tmp_dados[idx].enviada = true
         tmp_Lista.data[idx].send.success = true
         tmp_Lista.data[idx].send.message = 'OK'
         tmp_Lista.data[idx].send.date    =  new Date()
       }
     }
+    
+    let ret = { success: true, qtde: tmp_qtde, message:'' }
+
 
     setDadosFotos(tmp_dados)
     refFoto.current.forceUpdate()
 
     await setData('@ListaFotos',tmp_Lista.data)
           .then((a)=>{
-
-
-               console.log('@ListaFotos - Salvo.',tmp_Lista.data)
-
+            ret.message = 'Success. OK.' 
           }).catch(err=>{
-               Alert.alert('ERRO:',err)
-    })
+            ret.success = false
+            ret.qtde = -1
+            ret.message = 'ERRO: '+err
+          })
+
+    console.log('RET: Pictures(setFotosEnviadas):',ret)
+
+    return ret
 
   }
 
@@ -280,7 +302,7 @@ export default function Pictures( { navigation } ) {
     if(IDs) {     
       await MediaLibrary.deleteAssetsAsync(IDs).then((ok)=>{
         setData('@ListaFotos',newListaFotos).then((a)=>{
-          Alert.alert('Dados excluido com sucesso.')
+          Alert.alert('Dados excluidos com sucesso.')
         })
       })
     }

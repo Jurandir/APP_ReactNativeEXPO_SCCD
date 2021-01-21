@@ -9,6 +9,7 @@ import {  View,
                    } from 'react-native';
                    
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as MediaLibrary from 'expo-media-library';
                    
 import GetCartaFrete from '../../interface/GetCartaFrete';
 import { delData, getData, setData } from '../../utils/dataStorage';
@@ -78,10 +79,30 @@ export default function CartaFrete( { navigation } ) {
      })
   }
 
-  const zeraDadosJaEnviados = () => {
-    //delData('@ListaFotos').then((a)=>{
-    //  alert('Dados zerados !!!')
-    //})
+  const zeraDadosJaEnviados = async () => {
+    let IDs = []
+    let newListaFotos = []
+    let stoListaFotos = await getData('@ListaFotos')
+    let listaFotos = stoListaFotos.data
+
+    for await ( let i of listaFotos) {   
+      if(i.send.success) {
+          IDs.push( i.id )
+      } else {
+          newListaFotos.push( i )
+      }
+    }
+
+    if(IDs) {     
+      await MediaLibrary.deleteAssetsAsync(IDs).then((ok)=>{
+        setData('@ListaFotos',newListaFotos).then((a)=>{
+          Alert.alert('Dados excluidos com sucesso !!!')
+        })
+      })
+    } else {
+      Alert.alert('Não há dados enviados para excluir !!!')
+    }
+
  }
 
   
